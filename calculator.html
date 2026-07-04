@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smoker Door Spring-Hinge Calculator</title>
+<style>
+  :root { --bg:#14304d; --panel:#0f2740; --line:#e8f1fa; --med:#bcd6ec; --dim:#9fc2e0;
+          --accent:#f5b942; --bad:#ff7a6e; --ok:#7ee0a3; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--line);
+         font-family:Consolas,'Courier New',monospace; padding:24px; }
+  h1 { font-size:20px; letter-spacing:1px; }
+  h1 span { color:var(--accent); }
+  .wrap { display:flex; flex-wrap:wrap; gap:24px; align-items:flex-start; }
+  .panel { background:var(--panel); border:1px solid #2a4a70; padding:16px 18px; }
+  .inputs { width:360px; }
+  .inputs h2, .out h2 { font-size:14px; color:var(--accent); margin:14px 0 6px;
+                        border-bottom:1px solid #2a4a70; padding-bottom:3px; }
+  .inputs h2:first-child { margin-top:0; }
+  label { display:flex; justify-content:space-between; align-items:center;
+          font-size:12.5px; color:var(--med); margin:5px 0; gap:8px; }
+  input { width:90px; background:#0a1e33; color:var(--line); border:1px solid #2a4a70;
+          font:inherit; font-size:13px; padding:3px 6px; text-align:right; }
+  .out { flex:1; min-width:560px; }
+  canvas { width:100%; background:var(--bg); border:1px solid #2a4a70; }
+  table { border-collapse:collapse; font-size:13px; margin-top:10px; width:100%; }
+  td { padding:3px 10px 3px 0; color:var(--med); }
+  td.v { color:var(--line); text-align:right; white-space:nowrap; }
+  .flag { font-size:13px; margin:4px 0; }
+  .ok { color:var(--ok); } .bad { color:var(--bad); }
+  .note { font-size:11.5px; color:var(--dim); margin-top:12px; line-height:1.5; }
+</style>
+</head>
+<body>
+<h1>OFFSET SMOKER — DOOR SPRING-HINGE <span>SIZING CALCULATOR</span></h1>
+<div class="wrap">
+  <div class="panel inputs">
+    <h2>CHAMBER &amp; DOOR</h2>
+    <label>Chamber OD, in <input id="od" value="24" step="0.5" type="number"></label>
+    <label>Door arc, deg <input id="arc" value="120" step="5" type="number"></label>
+    <label>Door length, in <input id="len" value="30" step="1" type="number"></label>
+    <label>Plate thickness, in <input id="thk" value="0.25" step="0.0625" type="number"></label>
+    <label>Hardware weight adder, lb <input id="hw" value="6.5" step="0.5" type="number"></label>
+    <label>Door top edge angle, deg <input id="top" value="80" step="1" type="number"></label>
+    <label>Hinge pin standoff, in <input id="stand" value="1.2" step="0.1" type="number"></label>
+    <label>Handle radius from hinge, in <input id="handle" value="20" step="1" type="number"></label>
+    <h2>RIBBON SPRINGS</h2>
+    <label>Number of canisters <input id="nspr" value="2" step="1" type="number"></label>
+    <label>Rate k, in·lb/turn each <input id="k" value="110" step="5" type="number"></label>
+    <label>Preload, turns <input id="pre" value="2.5" step="0.25" type="number"></label>
+    <label>Ribbon width b, in <input id="rb" value="2.0" step="0.25" type="number"></label>
+    <label>Ribbon thickness t, in <input id="rt" value="0.085" step="0.005" type="number"></label>
+    <h2>SNAP CAM</h2>
+    <label>Follower preload, lb <input id="ff" value="120" step="10" type="number"></label>
+    <label>Valley depth, in <input id="vd" value="0.45" step="0.05" type="number"></label>
+    <label>Ramp span, deg <input id="ramp" value="15" step="1" type="number"></label>
+    <label>Hold-open notch depth, in <input id="nd" value="0.20" step="0.05" type="number"></label>
+    <label>Notch width, deg <input id="nw" value="8" step="1" type="number"></label>
+  </div>
+  <div class="panel out">
+    <canvas id="cv" width="900" height="480"></canvas>
+    <div id="flags"></div>
+    <table id="tbl"></table>
+    <div class="note">
+      Model: gravity torque T<sub>g</sub>(θ)=W·L·cos(θ−β) about a hinge pin just above the
+      door's top edge; ribbon springs give a nearly flat opening torque n·k·(preload−θ/360);
+      the cam detent adds closing torque F·(depth/ramp) fading linearly over the ramp.
+      Ribbon stress σ=6M/(b·t²) — keep ≤150 ksi (Cr-Si). Ribbon length for the entered
+      rate: ℓ=2πE·I/k, I=b·t³/12, E=30×10⁶ psi. Companion to docs/DESIGN.md — same math,
+      same worked-example defaults.
+    </div>
+  </div>
+</div>
+<script>
+const $ = id => parseFloat(document.getElementById(id).value) || 0;
+const D2R = Math.PI/180;
+
+function solve() {
+  const R=$('od')/2, arc=$('arc'), len=$('len'), thk=$('thk'), topA=$('top');
+  const a=arc/2*D2R;
+  const W = R*arc*D2R*len*thk*0.284 + $('hw');
+  const rcg = R*Math.sin(a)/a, cgA=(topA-arc/2)*D2R;
+  const H = [(R+$('stand'))*Math.cos((topA+2)*D2R), (R+$('stand'))*Math.sin((topA+2)*D2R)];
+  const G = [rcg*Math.cos(cgA), rcg*Math.sin(cgA)];
+  const L = Math.hypot(G[0]-H[0], G[1]-H[1]);
+  const beta = Math.atan2(-(G[1]-H[1]), G[0]-H[0])/D2R;
+  const n=$('nspr'), k=$('k'), pre=$('pre'), ff=$('ff'), vd=$('vd'), ramp=$('ramp');
+  const seat = ff*vd/(ramp*D2R), notch = ff*$('nd')/($('nw')*D2R);
+  const Tg = th => -W*L*Math.cos((th-beta)*D2R);
+  const Ts = th => n*k*(pre-th/360);
+  const Tc = th => th<ramp ? -seat*(1-th/ramp) : 0;
+  const net = th => Tg(th)+Ts(th)+Tc(th);
+  let stall=false, peak=0;
+  for (let th=0; th<=ramp; th+=0.25) if (net(th) > -5) stall=true;
+  for (let th=ramp; th<=90; th+=0.25) peak=Math.max(peak, -net(th));
+  const M=k*pre, b=$('rb'), t=$('rt');
+  const sig=6*M/(b*t*t)/1000, I=b*t*t*t/12, rib=2*Math.PI*30e6*I/k;
+  return {W,L,beta,WL:W*L,seat,notch,Tg,Ts,Tc,net,stall,peak,M,sig,rib,
+          seal:-net(0), at90:net(90)};
+}
+
+function fmt(x,d=0){ return x.toFixed(d); }
+
+function draw() {
+  const r = solve(), c = document.getElementById('cv'), g = c.getContext('2d');
+  const x0=70, y0=20, pw=c.width-x0-20, ph=c.height-y0-50;
+  let lo=-100, hi=100;
+  for (let th=0; th<=90; th+=1){ lo=Math.min(lo,r.Tg(th),r.net(th),r.Tc(th));
+                                 hi=Math.max(hi,r.Ts(th)); }
+  lo=Math.floor(lo/100-1)*100; hi=Math.ceil(hi/100+1)*100;
+  const X = th => x0+th/90*pw, Y = tq => y0+(hi-tq)/(hi-lo)*ph;
+  g.fillStyle='#14304d'; g.fillRect(0,0,c.width,c.height);
+  g.font='11px Consolas,monospace'; g.textAlign='center';
+  g.strokeStyle='#27496e'; g.fillStyle='#9fc2e0';
+  for (let th=0; th<=90; th+=15){ g.beginPath(); g.moveTo(X(th),y0); g.lineTo(X(th),y0+ph);
+    g.stroke(); g.fillText(th+'°', X(th), y0+ph+16); }
+  g.textAlign='right';
+  const step=(hi-lo)>1600?400:200;
+  for (let tq=lo; tq<=hi; tq+=step){ g.beginPath(); g.moveTo(x0,Y(tq)); g.lineTo(x0+pw,Y(tq));
+    g.stroke(); g.fillText(tq, x0-6, Y(tq)+4); }
+  g.strokeStyle='#bcd6ec'; g.beginPath(); g.moveTo(x0,Y(0)); g.lineTo(x0+pw,Y(0)); g.stroke();
+  g.fillStyle='rgba(245,185,66,0.10)';
+  g.fillRect(X(0),y0,X($('ramp'))-X(0),ph);
+  function curve(f,color,dash,w){ g.strokeStyle=color; g.setLineDash(dash); g.lineWidth=w;
+    g.beginPath(); for(let th=0;th<=90;th+=0.5){ const p=[X(th),Y(f(th))];
+      th?g.lineTo(...p):g.moveTo(...p);} g.stroke(); g.setLineDash([]); g.lineWidth=1; }
+  curve(r.Tg,'#7ea6c9',[6,4],1.5);
+  curve(r.Ts,'#bcd6ec',[2,3],1.5);
+  curve(th=>r.Tc(th),'#f5b942',[6,2,2,2],1.5);
+  curve(r.net,'#f5b942',[],3);
+  g.textAlign='left'; const leg=[['GRAVITY','#7ea6c9'],['SPRINGS','#bcd6ec'],
+    ['CAM DETENT','#f5b942'],['NET (BOLD)','#f5b942']];
+  leg.forEach((l,i)=>{ g.fillStyle=l[1]; g.fillText(l[0], x0+14, y0+16+i*15); });
+
+  const flags=document.getElementById('flags');
+  flags.innerHTML =
+    (r.stall ? '<div class="flag bad">✗ STALL: net torque goes opening inside the snap zone — deepen valley, widen ramp, raise follower force, or drop preload.</div>'
+             : '<div class="flag ok">✓ Snap-through OK — net closing across the whole ramp.</div>') +
+    (r.seal>20 ? `<div class="flag ok">✓ Seat seal ${fmt(r.seal)} in·lb closing.</div>`
+               : `<div class="flag bad">✗ Weak/negative seat seal (${fmt(r.seal)} in·lb) — door may pop open.</div>`) +
+    (r.notch > Math.abs(r.at90)*1.5 ? `<div class="flag ok">✓ Hold-open margin ${fmt(r.notch-Math.abs(r.at90))} in·lb at 90°.</div>`
+               : `<div class="flag bad">✗ Hold-open marginal: net ${fmt(r.at90)} vs notch ${fmt(r.notch)} in·lb — deepen notch or add preload.</div>`) +
+    (r.sig<=150 ? `<div class="flag ok">✓ Ribbon stress ${fmt(r.sig)} ksi ≤ 150 ksi.</div>`
+                : `<div class="flag bad">✗ Ribbon overstressed: ${fmt(r.sig)} ksi &gt; 150 ksi — thicker/wider ribbon or less preload.</div>`);
+  document.getElementById('tbl').innerHTML = [
+    ['Door weight', fmt(r.W,1)+' lb'],
+    ['Hinge→CG: L, β', fmt(r.L,2)+' in, '+fmt(r.beta,1)+'°'],
+    ['Gravity torque W·L (peak)', fmt(r.WL)+' in·lb'],
+    ['Cam seat detent / hold-open', fmt(r.seat)+' / '+fmt(r.notch)+' in·lb'],
+    ['Peak lift effort (assisted)', fmt(r.peak)+' in·lb = '+fmt(r.peak/$('handle'),1)+' lb at handle'],
+    ['Unassisted peak effort', fmt(r.WL/$('handle'),1)+' lb at handle'],
+    ['Per-spring torque at closed', fmt(r.M)+' in·lb (σ = '+fmt(r.sig)+' ksi)'],
+    ['Ribbon length for rate k', fmt(r.rib)+' in ('+fmt(r.rib/12,1)+' ft)'],
+  ].map(row=>`<tr><td>${row[0]}</td><td class="v">${row[1]}</td></tr>`).join('');
+}
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input', draw));
+draw();
+</script>
+</body>
+</html>
