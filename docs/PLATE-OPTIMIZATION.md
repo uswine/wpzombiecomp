@@ -1,63 +1,72 @@
-# Perforated Airflow Plate — Hole-Size Optimization Record
+# Rotary Damper Plates — Design & Optimization Record (Rev B)
 
-**Part:** WPZ-PLT-001 — Ø24.00 × .375 A36 plate, waterjet cut
+**Part:** WPZ-PLT-001 Rev B — Ø24.00 × .375 A36, waterjet cut, **QTY 2 identical**
 **Print:** `drawings/plate-24-perforated.svg` / `.pdf` · **CAM geometry:** `drawings/plate-24-perforated.dxf`
 
-## Problem
+## What changed from Rev A and why
 
-Maximize open area subject to:
-- hole diameter D > 1.000"
-- center-to-center spacing s = 1.333 × D (minimum, staggered concentric rows)
-- hole edge to plate edge ≥ 0.500"
-- solid Ø3.500 center hub (no cuts)
+Rev A optimized a single perforated plate at 1.333×Ø spacing (60 holes, 41.7% open).
+Design review corrected the intent: **two identical plates stacked, one rotating**
+— a rotary damper. That kills Rev A twice over:
 
-## Why this needed a numeric solve
+1. **Sealing.** At 1.333×Ø spacing the web between holes (0.333×Ø) is far narrower
+   than a hole, so the rotated plate's holes can never land fully on solid metal —
+   the damper cannot shut off. Rule adopted: **web = 1.5×Ø minimum (c-c = 2.5×Ø)**.
+   At the closed position each hole then sits centered in a web with real cover on
+   both sides.
+2. **Common shutoff angle.** A row with n holes seals at a twist of 180/n. Rev A's
+   24/18/12/6 rows would seal at 7.5°/10°/15°/30° — no single lever position closes
+   them all. Every row must share one closure angle.
 
-For an infinite triangular pattern the open-area fraction is
-π / (4 · 1.333² · sin 60°) ≈ 51% **regardless of D** — hole size cancels out.
-The optimum is therefore decided entirely by *edge effects*: how cleanly whole
-rows of a given diameter pack into the annulus between the hub and the edge
-margin, both of which shift with D (outer row center radius = 11.5 − D/2, inner
-limit = 1.75 + D/2).
+## Architecture selection
 
-A second subtlety: on concentric circular rows, "staggered midway" packing is
-never exact (adjacent rows have different hole counts), so the naive
-0.866 · s row pitch violates the spacing constraint where holes drift into
-radial alignment. The solver placed each row as far out as possible while the
-**worst-case** center distance to the previous row (over an optimized relative
-rotation) stayed ≥ s.
+Candidates evaluated (all with c-c = 2.5×Ø, 0.50" edge margin, Ø3.5 solid hub):
 
-## Result of the sweep (D = 1.005 → 2.20, 0.005 steps)
+| Architecture | Shutoff | Flow behavior | Best open area |
+|---|---|---|---|
+| Mixed counts, odd-multiple family (21/15/9 etc.) | ✅ one angle | ❌ **non-monotonic** — flow re-opens to 67% mid-travel | 56.6 in² |
+| **Same count every row (radial spokes)** | ✅ one angle | ✅ **monotonic 100%→0%** | **42.8 in²** |
+| Single ring, few large holes (daisy) | ✅ | ✅ monotonic | 55–75 in² |
 
-| D | holes | open in² |
-|---:|---:|---:|
-| 1.500 | 106 | 187.3* |
-| 1.910 | 65 | 186.2 |
-| 1.980 | 61 | 187.8 |
-| **2.000** | **60** | **188.5 ← optimum** |
-| 2.100 | 55 | 186.1 |
+The mixed-count family was rejected on the measured flow curve: between open and
+closed the total flow oscillates wildly (7% at 9° twist, back to 67% at 51°),
+making the lever position meaningless. Same-count spokes are the classic rotary
+damper solution and were selected. The daisy option (e.g. 6 × Ø3.98 = 74.6 in²)
+flows most but abandons the multi-row distribution; noted as an alternative if
+the damper feeds a plenum where distribution doesn't matter.
 
-\*representative mid-sweep values; full sweep in `tools/generate_plate_drawing.py` docstring context.
+## Optimized result (same-count architecture)
 
-**Optimum: D = 2.000", s = 2.666", 60 holes in 4 rows — open area 188.5 in² (41.7% of gross).**
-The peak lands on a fully 6-fold-symmetric pattern (row counts 24/18/12/6), which
-is also the best-looking and stiffest arrangement of the near-optimal candidates.
+Sweep over hole diameter with rows placed inward at 2.5×Ø pitch until the hub
+stops the next row; hole count set by the inner row; open area maximized:
 
-## Final verified geometry
+**Ø1.740 holes — 18 total on 9 radial spokes × 2 rows (R10.630 / R6.280).**
+The raw optimum was Ø1.747, but that fits the 9th hole with 0.003" of spacing
+margin; Ø1.740 restores a healthy margin (inner-row web = 1.52×Ø).
 
-| Row | Radius | Qty | First hole | Pitch |
-|---|---|---|---|---|
-| 1 | 10.500 | 24 | 7.5° | 15° |
-| 2 | 7.864 | 18 | 0.0° | 20° |
-| 3 | 5.257 | 12 | 5.0° | 30° |
-| 4 | 2.786 | 6 | 20.0° | 60° |
+| Parameter | Value |
+|---|---|
+| Hole diameter | Ø1.740 (18 plcs) |
+| Row radii / counts | R10.630 × 9, R6.280 × 9 (spokes aligned, first hole at 0°) |
+| Spacing | row pitch 4.350 (2.50×Ø exact); in-row c-c 4.384 min (2.52×Ø) |
+| Shutoff twist | **20.0°** (= 180/9) |
+| Flow vs twist | 0°=100%, 5°=74%, 10°=41%, 15°=13%, 20°=0% — monotonic (verified) |
+| Closed-position seal cover | **0.441" minimum**, verified over all fixed-vs-rotated hole pairs |
+| Open area (aligned) | 42.8 in² = 9.5% of gross |
+| Edge margin / hub | 0.500" exact / inner hole edge at R5.41, hub untouched |
+| Weight | 43.6 lb per plate (87 lb pair) |
 
-Checks (computed over **all** hole pairs, not just neighbors):
-- global minimum center-to-center = **2.6660"** = 1.333 × Ø exactly
-- minimum web between holes = **0.666"** (1.78 × plate thickness — stiff, waterjet-friendly)
-- edge margin = **0.500"** exact on the outer row
-- innermost hole edge at R1.786 → hub keeps a full Ø3.57 solid zone
-- estimated finished weight **28.1 lb** (from 48.2 lb solid)
+A third row does not fit: the next row would sit at R1.93, inside the hub limit
+of R2.62 — satisfying "rows continue inward until no additional holes fit."
 
-Row phases are the max–min-stagger solution; the pattern is 6-fold rotationally
-symmetric. Regenerate everything with `python3 tools/generate_plate_drawing.py`.
+## Notes for the build
+
+- Plates are cut from the **same DXF** — no left/right handing.
+- Deburr both faces; the plates must rotate flush against each other to seal.
+- The 20° control span maps nicely to a short lever slot; add end stops at 0°
+  and 20° so the operator can't over-travel into the next opening cycle.
+- If more open area is ever needed: 1 ring of 9 × Ø2.80 gives 55.4 in² and the
+  6 × Ø3.98 daisy gives 74.6 in², both rule-compliant and monotonic — at the cost
+  of concentrating flow at one radius.
+
+Regenerate print + DXF with `python3 tools/generate_plate_drawing.py`.
