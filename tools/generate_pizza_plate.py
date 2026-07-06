@@ -319,68 +319,117 @@ def sheet():
             line(a[0], a[1], b[0], b[1], sw=0.55)
     poly(top, sw=1.8, close=True)
 
-    # ============ 4) DETAIL — OPENING =========================
-    dx, dy, dsc = 235, 760, 42.0   # center of island, baseline y = minor OD line
-    text(60, 618, "4) DETAIL — OPENING (PLAN, STRAIGHTENED, NTS ANGLES)", size=14, weight="bold")
-    half_open = 3.4
-    yb = dy                      # minor OD line
-    yt = dy - 0.5 * dsc          # major OD line
-    xw = 0.5 * dsc               # island half width
-    f = FIL * dsc
-    # metal outline: body below yb + island tab with fillets
-    path = f'M {dx-(half_open+1.2)*dsc:.1f} {yb:.1f} L {dx-xw-f:.1f} {yb:.1f} '
-    path += f'A {f:.1f} {f:.1f} 0 0 0 {dx-xw:.1f} {yb-f:.1f} '
-    path += f'L {dx-xw:.1f} {yt:.1f} L {dx+xw:.1f} {yt:.1f} L {dx+xw:.1f} {yb-f:.1f} '
-    path += f'A {f:.1f} {f:.1f} 0 0 0 {dx+xw+f:.1f} {yb:.1f} '
-    path += f'L {dx+(half_open+1.2)*dsc:.1f} {yb:.1f}'
-    raw(f'<path d="{path}" stroke="{BLACK}" stroke-width="2" fill="none"/>')
-    # body hatch strip below baseline
-    raw(f'<rect x="{dx-(half_open+1.2)*dsc:.1f}" y="{yb:.1f}" '
-        f'width="{2*(half_open+1.2)*dsc:.1f}" height="42" fill="url(#ht)" '
-        f'stroke="{BLACK}" stroke-width="1.1"/>')
-    # dims
-    line(dx - xw, yt - 26, dx + xw, yt - 26, sw=0.8, m1=True, m2=True)
-    line(dx - xw, yt - 4, dx - xw, yt - 32, sw=0.6)
-    line(dx + xw, yt - 4, dx + xw, yt - 32, sw=0.6)
-    text(dx, yt - 32, "1.000", size=12, anchor="middle")
-    xr = dx + xw + 2.2 * dsc
-    line(xr, yt, xr, yb, sw=0.8, m1=True, m2=True)
-    line(dx + xw, yt, xr + 8, yt, sw=0.6)
-    text(xr + 8, (yt + yb) / 2 + 4, ".500 THRU", size=12)
-    leader(dx + xw + f * 0.3, yb - f * 0.3, dx + xw + 130, yb - 42, "R.250 TYP")
-    text(dx - (half_open + 1.2) * dsc, yt - 62, "Ø24.000 MAJOR OD (ISLAND TIPS)", size=11.5)
-    x0 = dx - (half_open + 1.2) * dsc
-    text(x0, yb + 60, "Ø23.000 MINOR OD (OPENING ROOT)", size=11.5)
-    text(x0, yb + 78, "FULL-THICKNESS PERIMETER RELIEF — THRU", size=11.5)
-    text(x0, yb + 96, "PLATE THICKNESS 1.000 — SEE SECTION A-A", size=11.5)
+    # ============ 4) DETAIL A — TRUE-CURVATURE PLAN ZOOM ======
+    # detail bubble on top view around the 0-deg island
+    bb = TT(pol((R_MAJ + R_MIN) / 2, 0))
+    circle(bb[0], bb[1], 30, sw=1.0, dash="6 4")
+    text(bb[0] + 34, bb[1] - 24, "B", size=14, weight="bold")
 
-    # ============ 5) EDGE DEVELOPMENT =========================
-    ex, ey = 838, 660
-    text(ex, 618, "5) FRONT EDGE DEVELOPMENT — UNWRAPPED (NTS)", size=14, weight="bold")
-    pitch, iw, th_, bh = 158, 24, 34, 26
-    yb2 = ey + 70
+    text(60, 618, "4) DETAIL B — PLAN, TRUE CURVATURE", size=14, weight="bold")
+    dcx, dby, dS = 250, 792, 62.0    # radial dir drawn UP; baseline ~R11.35
+    def DD(r, adeg):                 # plate polar -> detail screen (island at top)
+        x, y = pol(r, adeg)
+        return (dcx + y * -1 * -dS * 0 + (x * 0) + ( -pol(r, adeg)[1]) * -dS, 0)
+    def DDp(r, adeg):
+        x, y = pol(r, adeg)          # rotate +90 so 0-deg radial points up
+        xr, yr = -y, x
+        return (dcx + xr * dS, dby - (yr - 11.35) * dS)
+    # local outline: root left -> fillet -> wall -> island arc -> wall -> fillet -> root right
+    seq = []
+    for a in [x / 3 for x in range(-40, -int((W_HALF + DELTA) * 3) - 1, 1)] + [-(W_HALF + DELTA)]:
+        seq.append((R_MIN, a))
+    fc = pol(R_MIN + FIL, -(W_HALF + DELTA))
+    a0 = math.atan2(pol(R_MIN, -(W_HALF + DELTA))[1] - fc[1], pol(R_MIN, -(W_HALF + DELTA))[0] - fc[0])
+    a1 = math.atan2(pol(RT, -W_HALF)[1] - fc[1], pol(RT, -W_HALF)[0] - fc[0])
+    sw_ = a1 - a0
+    while sw_ <= -math.pi: sw_ += 2 * math.pi
+    while sw_ > math.pi: sw_ -= 2 * math.pi
+    fill_l = [(math.hypot(fc[0] + FIL * math.cos(a0 + sw_ * t / 8) - 0, fc[1] + FIL * math.sin(a0 + sw_ * t / 8)),
+               math.degrees(math.atan2(fc[1] + FIL * math.sin(a0 + sw_ * t / 8), fc[0] + FIL * math.cos(a0 + sw_ * t / 8))))
+              for t in range(9)]
+    seq += fill_l
+    seq += [(RT, -W_HALF), (R_MAJ, -W_HALF)]
+    for a in [x / 3 for x in range(-int(W_HALF * 3), int(W_HALF * 3) + 1)]:
+        seq.append((R_MAJ, a))
+    seq += [(R_MAJ, W_HALF), (RT, W_HALF)]
+    seq += [(r, -a) for r, a in reversed(fill_l)]
+    for a in [x / 3 for x in range(int((W_HALF + DELTA) * 3) + 1, 41)]:
+        seq.append((R_MIN, a))
+    poly([DDp(r, a) for r, a in seq], sw=2.2)
+    # reference arcs
+    for rr_ in (R_MAJ, R_MIN):
+        poly([DDp(rr_, a) for a in [x / 2 for x in range(-27, 28)]], sw=0.6, dash="8 5 2 5")
+    p24 = DDp(R_MAJ, 10.5)
+    text(p24[0] - 8, p24[1] - 8, "Ø24.000 REF", size=11, anchor="end")
+    p23 = DDp(R_MIN, -10.5)
+    text(p23[0] + 10, p23[1] + 18, "Ø23.000 REF", size=11)
+    # dims: island width at OD
+    c1, c2 = DDp(R_MAJ, -W_HALF), DDp(R_MAJ, W_HALF)
+    ytop = min(c1[1], c2[1]) - 30
+    line(c1[0], c1[1] - 4, c1[0], ytop - 6, sw=0.6)
+    line(c2[0], c2[1] - 4, c2[0], ytop - 6, sw=0.6)
+    line(c1[0], ytop, c2[0], ytop, sw=0.8, m1=True, m2=True)
+    text((c1[0] + c2[0]) / 2, ytop - 6, "1.000", size=12, anchor="middle")
+    # radial depth at +9 deg
+    d1, d2 = DDp(R_MIN, 9), DDp(R_MAJ, 9)
+    line(d1[0], d1[1], d2[0], d2[1], sw=0.8, m1=True, m2=True)
+    text(d2[0] + 6, (d1[1] + d2[1]) / 2 + 4, ".500", size=12)
+    # fillet leader
+    fpt = DDp(R_MIN + 0.08, -(W_HALF + DELTA * 0.6))
+    leader(fpt[0], fpt[1], fpt[0] + 78, fpt[1] - 34, "R.250 TYP")
+    # region labels — the key clarification
+    text(66, 668, "OPEN — OUTSIDE PLATE EDGE", size=11.5)
+    text(dcx, dby + 34, "SOLID PLATE — FLAT BOTH FACES, CONSTANT 1.000 THK", size=11.5, anchor="middle")
+    text(dcx, dby + 52, "ISLANDS ARE IN-PLANE OUTLINE FEATURES — NOT RAISED", size=11.5, anchor="middle")
+    # radial axis arrow
+    ax0, ax1 = DDp(R_MIN - 0.35, -13.4), DDp(R_MAJ + 0.35, -13.4)
+    raw(f'<line x1="{ax0[0]+34:.1f}" y1="{ax0[1]:.1f}" x2="{ax1[0]+34:.1f}" y2="{ax1[1]:.1f}" '
+        f'stroke="{BLACK}" stroke-width="0.9" marker-end="url(#ae)"/>')
+    text(ax1[0] + 34, ax1[1] - 8, "RADIAL", size=10.5, anchor="middle")
+
+    # ============ 5) EDGE DEVELOPMENT (PLAN) + EDGE ELEVATION =
+    ex = 838
+    text(ex, 618, "5) EDGE DEVELOPMENT — UNWRAPPED (NTS)", size=14, weight="bold")
+    text(ex, 638, "TOP: PLAN (VERTICAL AXIS = RADIAL, NOT HEIGHT) · BOTTOM: EDGE ELEVATION", size=11)
+    pitch, iw, th_ = 158, 24, 30
+    yb2 = ex and 712
     xs = ex
     path = f'M {xs:.1f} {yb2:.1f} '
-    for i in range(3):
-        x0 = xs + i * pitch + (pitch - iw) / 2
+    for i2 in range(3):
+        x0 = xs + i2 * pitch + (pitch - iw) / 2
         path += (f'L {x0-8:.1f} {yb2:.1f} A 8 8 0 0 0 {x0:.1f} {yb2-8:.1f} '
                  f'L {x0:.1f} {yb2-th_:.1f} L {x0+iw:.1f} {yb2-th_:.1f} '
                  f'L {x0+iw:.1f} {yb2-8:.1f} A 8 8 0 0 0 {x0+iw+8:.1f} {yb2:.1f} ')
     path += f'L {xs+3*pitch:.1f} {yb2:.1f}'
     raw(f'<path d="{path}" stroke="{BLACK}" stroke-width="1.8" fill="none"/>')
-    raw(f'<rect x="{xs}" y="{yb2:.1f}" width="{3*pitch}" height="{bh}" '
-        f'fill="url(#ht)" stroke="{BLACK}" stroke-width="1.1"/>')
-    for i in range(3):
-        x0 = xs + i * pitch + (pitch - iw) / 2
+    for i2 in range(3):
+        x0 = xs + i2 * pitch + (pitch - iw) / 2
         text(x0 + iw / 2, yb2 - th_ - 8, "1.00", size=11, anchor="middle")
-        if i < 3:
-            text(x0 + iw + (pitch - iw) / 2, yb2 - 12, "OPENING", size=10.5, anchor="middle")
-            text(x0 + iw + (pitch - iw) / 2, yb2 - 26, "8.425 REF", size=10.5, anchor="middle")
-    line(xs, yb2 + bh + 18, xs + 3 * pitch, yb2 + bh + 18, sw=0.8, m1=True, m2=True)
-    text(xs + 1.5 * pitch, yb2 + bh + 34, "REPEAT AROUND FULL CIRCUMFERENCE — 8 ISLANDS TOTAL",
-         size=11.5, anchor="middle")
-    text(xs + 1.5 * pitch, yb2 + bh + 50, "PITCH 9.425 REF AT Ø24.000 · 45° TYP SPACING",
-         size=11.5, anchor="middle")
+        text(x0 + iw + (pitch - iw) / 2, yb2 - 12, "OPENING 8.425 REF", size=10.5, anchor="middle")
+    text(xs + 3 * pitch + 8, yb2 - th_ + 4, "Ø24.000 LINE", size=10)
+    text(xs + 3 * pitch, yb2 + 14, "Ø23.000 LINE (OPENING ROOT)", size=10, anchor="end")
+    raw(f'<line x1="{xs-26}" y1="{yb2:.1f}" x2="{xs-26}" y2="{yb2-th_:.1f}" '
+        f'stroke="{BLACK}" stroke-width="0.9" marker-end="url(#ae)"/>')
+    text(xs - 32, yb2 - th_ + 4, "RADIAL", size=10, anchor="end")
+    text(xs + 1.5 * pitch, yb2 + 32, "PLATE BODY CONTINUES INBOARD (SOLID, FLAT)", size=10.5, anchor="middle")
+    # edge elevation: constant thickness band — proves no raised surfaces
+    yb3 = yb2 + 96
+    tb = 26
+    raw(f'<rect x="{xs}" y="{yb3}" width="{3*pitch}" height="{tb}" fill="url(#ht)" '
+        f'stroke="{BLACK}" stroke-width="1.6"/>')
+    for i2 in range(3):
+        x0 = xs + i2 * pitch + (pitch - iw) / 2
+        line(x0, yb3, x0, yb3 + tb, sw=0.7, dash="4 3")
+        line(x0 + iw, yb3, x0 + iw, yb3 + tb, sw=0.7, dash="4 3")
+    line(xs + 3 * pitch + 20, yb3, xs + 3 * pitch + 20, yb3 + tb, sw=0.8, m1=True, m2=True)
+    text(xs + 3 * pitch + 28, yb3 + tb / 2 + 4, "1.000", size=11)
+    text(xs, yb3 - 8, "EDGE ELEVATION (LOOKING RADIALLY INBOARD):", size=10.5)
+    text(xs, yb3 + tb + 18, "CONSTANT 1.000 THK EVERYWHERE — FLAT FACES, NO RAISED SURFACES.", size=10.5)
+    text(xs, yb3 + tb + 34, "DASHED: ISLAND SIDE EDGES. OPENING ROOT EDGE SITS 0.500 INBOARD.", size=10.5)
+    line(xs, yb3 + tb + 52, xs + 3 * pitch, yb3 + tb + 52, sw=0.8, m1=True, m2=True)
+    text(xs + 1.5 * pitch, yb3 + tb + 68,
+         "REPEAT AROUND FULL CIRCUMFERENCE — 8 ISLANDS · PITCH 9.425 REF · 45° TYP",
+         size=10.5, anchor="middle")
 
     # ============ table =======================================
     tx, ty = 490, 645
@@ -411,18 +460,18 @@ def sheet():
     # ============ notes + tolerances ==========================
     notes = [
         "NOTES:",
-        "1. ONE MONOLITHIC PLATE — NO RING, SHELF, LEDGE, OR STEP.",
-        "2. ALL OPENINGS FULL-THICKNESS THRU. WATERJET/PLASMA OK.",
-        "3. ISLANDS ARE THE ONLY WELD ATTACHMENT POINTS (8X EQ SP).",
-        "4. INTERNAL CORNERS R.250 UNO. DEBURR; REMOVE SLAG/DROSS.",
-        "5. CUT FILE pizza-plate-24.dxf: ONE CLOSED CONTOUR, TRUE",
-        "   ARCS, CUT LAYER. KERF COMP BY SHOP.",
-        "6. 3D pizza-plate-24.stl (1.000 EXTRUSION). STEP: IMPORT",
-        "   DXF, EXTRUDE 1.000.",
-        "7. EST WT 119 LB. FLATNESS .060 MAX. VERIFY BEFORE CUT.",
+        "1. ONE MONOLITHIC FLAT PLATE — NO RING/SHELF/LEDGE/STEP.",
+        "2. OPENINGS FULL-THICKNESS THRU. WATERJET/PLASMA OK.",
+        "3. ISLANDS = ONLY WELD ATTACHMENT POINTS (8X EQ SP).",
+        "4. INTERNAL CORNERS R.250 UNO. DEBURR ALL EDGES.",
+        "5. CUT FILE pizza-plate-24.dxf — ONE CLOSED CONTOUR,",
+        "   TRUE ARCS. KERF COMP BY SHOP.",
+        "6. STL = 1.000 EXTRUSION. STEP: IMPORT DXF, EXTRUDE 1.000.",
+        "7. NO RAISED SURFACES — ISLANDS ARE IN-PLANE (DETAIL B).",
+        "8. EST WT 119 LB. FLATNESS .060 MAX. VERIFY BEFORE CUT.",
     ]
     for i, nline in enumerate(notes):
-        text(36, 878 + i * 15.5, nline, size=11, weight="bold" if i == 0 else "normal")
+        text(36, 872 + i * 14.5, nline, size=11, weight="bold" if i == 0 else "normal")
     bx, by = 1082, 940
     raw(f'<rect x="{bx}" y="{by}" width="382" height="72" fill="none" '
         f'stroke="{BLACK}" stroke-width="1.6"/>')
