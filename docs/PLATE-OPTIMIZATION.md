@@ -1,7 +1,36 @@
-# Rotary Damper Plates — Design & Optimization Record (Rev B)
+# Rotary Damper Plates — Design & Optimization Record (Rev C)
 
-**Part:** WPZ-PLT-001 Rev B — Ø24.00 × .375 A36, waterjet cut, **QTY 2 identical**
+**Part:** WPZ-PLT-001 Rev C — Ø24.00 × .375 A36, waterjet cut, **QTY 2 identical**
 **Print:** `drawings/plate-24-perforated.svg` / `.pdf` · **CAM geometry:** `drawings/plate-24-perforated.dxf`
+
+## Rev C — outer row enlarged (current)
+
+Review direction: outer-row holes 2–3× the Rev B Ø1.740, and OD-to-hole gap held
+at 0.500" min. Key insight enabling this: with the same hole *count* per row, each
+row can carry its **own diameter** sized to its own radius — common shutoff and
+monotonic flow are preserved. Rev B wasted the outer row (Ø1.74 holes spaced 7.4"
+apart because the inner row dictated everything).
+
+| Parameter | Value |
+|---|---|
+| Pattern | **5 spokes × 2 rows: Row 1 = 5 × Ø4.600 at R9.200, Row 2 = 5 × Ø1.700 at R3.500** |
+| Outer row vs Rev B | Ø4.600 = **2.64×** Ø1.740 |
+| OD-to-hole gap | **0.500 exact** (R9.200 + Ø4.600/2 = 11.500) |
+| Spacing | Row 1 c-c 11.561 (2.51×Ø), Row 2 c-c 4.398 (2.59×Ø), radial web 2.550 (1.5× row-2 Ø) |
+| Shutoff twist | **36.0°** (= 180/5) |
+| Flow vs twist | 9°=61%, 18°=26%, 27°=2%, 36°=0% — monotonic (verified) |
+| Closed seal cover | **0.463" minimum** over all fixed-vs-rotated pairs |
+| Open area (aligned) | **94.4 in² = 20.9%** (was 42.8 in² in Rev B — 2.2×) |
+| Hub | inner hole edge at R2.650 vs hub R1.750 → 0.900 clear |
+| Weight | 38.1 lb per plate |
+
+Alternative sized during the sweep: 7 spokes × 2 rows (Ø3.500 outer / Ø1.650
+inner) = 82.3 in², twist 25.7° — choose this if a finer-grained look is preferred
+over the last 12 in² of flow.
+
+---
+
+# Rev B record (superseded)
 
 ## What changed from Rev A and why
 
