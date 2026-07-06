@@ -1,9 +1,14 @@
-# Rotary Damper Plates — Design & Optimization Record (Rev D)
+# Rotary Damper Plates — Design & Optimization Record (Rev E)
 
-**Part:** WPZ-PLT-001 Rev D — Ø24.00 × .375 A36, waterjet cut, **QTY 2 identical**
+**Part:** WPZ-PLT-001 Rev E — Ø24.00 × .375 A36, waterjet cut, **QTY 2 identical**
 **Print:** `drawings/plate-24-perforated.svg` / `.pdf` · **CAM geometry:** `drawings/plate-24-perforated.dxf`
 
-## Rev D — half-diameter edge gap (current)
+## Rev E — center pivot hole added (current)
+
+Ø0.500 thru hole at plate center on both plates for the pivot bolt/axle. The
+bolt fills it, so it adds no leak path; hub ring remains solid otherwise.
+
+## Rev D — half-diameter edge gap
 
 Review corrections applied in sequence: (Rev C) outer-row holes 2–3× the Rev B
 Ø1.740 via per-row diameters; (Rev D) the OD-to-hole gap scales with hole size —

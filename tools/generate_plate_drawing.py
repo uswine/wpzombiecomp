@@ -11,6 +11,9 @@ Rules held: edge gap 2.000 = 0.5 x Ø, c-c >= 2.5 x dia each row
 solid. Verified: closed-position min cover 0.354 over all pairs;
 flow 100%->0% monotonic over 36 deg; open area 71.7 in^2 (15.8%).
 
+REV E adds a O0.500 center hole for the pivot bolt/axle (filled by
+the bolt; no leak path).
+
 Outputs: drawings/plate-24-perforated.svg, drawings/plate-24-perforated.dxf
 """
 import math
@@ -147,9 +150,14 @@ line(q1[0], q1[1], q2[0], q2[1], sw=0.8, m1=True, m2=True)
 leader((q1[0] + q2[0]) / 2, q1[1], (q1[0] + q2[0]) / 2 + 3, q1[1] + 165,
        "OD GAP 2.000 (0.5×Ø MIN)", anchor="end")
 
+# ---- center pivot hole
+circle(CX, CY, 0.250 * SC, sw=1.8)
+pv = T(0.250 * 0.707, 0.250 * 0.707)
+leader(pv[0], pv[1], CX + 150, CY + 240, "Ø.500 THRU — PIVOT BOLT/AXLE")
+
 # ---- hub leader
 hb = T(*pol(HUB_D / 2, 250))
-leader(hb[0], hb[1], 300, 920, "Ø3.500 SOLID HUB — NO CUTS", anchor="end")
+leader(hb[0], hb[1], 300, 920, "Ø3.500 HUB (Ø.500 PIVOT ONLY)", anchor="end")
 
 # ---- outer row radius dim
 rr = T(*pol(ROWS[0][0], 200))
@@ -195,8 +203,9 @@ notes = [
     ("   CLOSED-POSITION SEAL COVER .354 MIN, VERIFIED OVER", False),
     ("   ALL HOLE PAIRS. RADIAL WEB 2.250 (1.5× ROW-2 Ø).", False),
     ("   OD-TO-HOLE GAP ≥ 0.5× ROW-1 Ø = 2.000.", False),
-    ("5. 10 HOLES ON 5 RADIAL SPOKES × 2 ROWS; DIA PER ROW", False),
-    ("   PER TABLE. SAME COUNT PER ROW REQUIRED SO BOTH", False),
+    ("5. 10 FLOW HOLES ON 5 SPOKES × 2 ROWS + Ø.500 CENTER", False),
+    ("   PIVOT HOLE (FILLED BY AXLE BOLT — NO LEAK PATH).", False),
+    ("   DIA PER ROW PER TABLE. SAME COUNT PER ROW SO BOTH", False),
     ("   ROWS CLOSE AT ONE TWIST ANGLE.", False),
     ("6. OPEN AREA (ALIGNED) 71.7 SQ IN = 15.8% OF GROSS.", False),
     ("   EST. WEIGHT 40.5 LB PER PLATE.", False),
@@ -215,7 +224,8 @@ cols = [NX, NX + 52, NX + 140, NX + 240, NX + 292, NX + 396, NX + 490]
 hdr = ["ROW", "RADIUS", "HOLE Ø", "QTY", "FIRST HOLE", "PITCH"]
 rows_tbl = [("1", "8.000", "4.000", "5", "0.0°", "72.0°"),
             ("2", "3.000", "1.500", "5", "0.0°", "72.0°"),
-            ("", "", "TOTAL", "10", "", "")]
+            ("CTR", "0.000", "0.500", "1", "—", "—"),
+            ("", "", "TOTAL", "11", "", "")]
 th = 24
 line(cols[0], ty + 10, cols[6], ty + 10, sw=1.2)
 for i, hcell in enumerate(hdr):
@@ -225,16 +235,17 @@ for r_i, row in enumerate(rows_tbl):
     for c_i, cell in enumerate(row):
         text(cols[c_i] + 6, ty + 36 + (r_i + 1) * th - 7, cell, size=12.5)
     line(cols[0], ty + 36 + (r_i + 1) * th, cols[6], ty + 36 + (r_i + 1) * th,
-         sw=1.2 if r_i in (1, 2) else 0.6)
+         sw=1.2 if r_i in (2, 3) else 0.6)
 for c in cols:
     line(c, ty + 10, c, ty + 36 + len(rows_tbl) * th, sw=0.8)
 text(NX, ty + 36 + len(rows_tbl) * th + 20,
      "ANGLES CCW FROM +X AXIS. ROW RADII TO HOLE CENTERS.", size=12)
 
 # ---- closed-position inset (proof view)
-IX, IY, ISC = 1185, 745, 7.9
+IX, IY, ISC = 1185, 768, 7.0
 circle(IX, IY, R_PLATE * ISC, sw=1.4)
 circle(IX, IY, HUB_D / 2 * ISC, sw=0.6, dash="6 3 2 3")
+circle(IX, IY, 0.250 * ISC, sw=0.8)
 for r, n, ph, D in ROWS:
     for j in range(n):
         a = math.radians(ph + 360 * j / n)
@@ -243,9 +254,9 @@ for r, n, ph, D in ROWS:
         a2 = math.radians(ph + 360 * j / n + TWIST)
         circle(IX + r * ISC * math.cos(a2), IY - r * ISC * math.sin(a2),
                D / 2 * ISC, sw=1.0, dash="4 3")
-text(IX, IY + R_PLATE * ISC + 20, "CLOSED POSITION — TOP PLATE +36.0° (DASHED)",
+text(IX, IY + R_PLATE * ISC + 18, "CLOSED POSITION — TOP PLATE +36.0° (DASHED)",
      size=12.5, anchor="middle")
-text(IX, IY + R_PLATE * ISC + 38, "EVERY HOLE ON SOLID WEB, .354 MIN COVER",
+text(IX, IY + R_PLATE * ISC + 34, "EVERY HOLE ON SOLID WEB, .354 MIN COVER",
      size=12.5, anchor="middle")
 
 # ---- title block
@@ -259,10 +270,10 @@ line(bx + 310, by + 32, bx + 310, by + bh, sw=1)
 text(bx + 12, by + 22, "OFFSET SMOKER PROJECT — WATERJET FABRICATION PRINT",
      size=14.5, weight="bold")
 text(bx + 12, by + 52, "ROTARY DAMPER PLATE, Ø24.00 (PAIR)", size=13.5)
-text(bx + 322, by + 52, "DWG NO: WPZ-PLT-001  REV D", size=12.5)
+text(bx + 322, by + 52, "DWG NO: WPZ-PLT-001  REV E", size=12.5)
 text(bx + 12, by + 82, "MATL: ASTM A36 · THK .375 · QTY 2", size=12.5)
 text(bx + 322, by + 82, "SCALE: 34 PX/IN · UNITS: IN", size=12.5)
-text(bx + 12, by + 110, "REV D: OD GAP = 0.5×Ø (2.000)", size=12)
+text(bx + 12, by + 110, "REV E: ADD Ø.500 CENTER PIVOT HOLE", size=12)
 text(bx + 322, by + 110, "SHT 1/1 · 2026-07-06", size=12.5)
 
 svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
@@ -276,7 +287,7 @@ print("wrote plate-24-perforated.svg")
 def dxf_circle(x, y, r, layer):
     return f"0\nCIRCLE\n8\n{layer}\n10\n{x:.4f}\n20\n{y:.4f}\n30\n0.0\n40\n{r:.4f}\n"
 
-ents = [dxf_circle(0, 0, R_PLATE, "CUT")]
+ents = [dxf_circle(0, 0, R_PLATE, "CUT"), dxf_circle(0, 0, 0.250, "CUT")]
 for r, n, ph, D in ROWS:
     for j in range(n):
         x, y = pol(r, ph + 360 * j / n)
@@ -293,4 +304,4 @@ dxf = ("0\nSECTION\n2\nHEADER\n9\n$INSUNITS\n70\n1\n0\nENDSEC\n"
        "0\nSECTION\n2\nENTITIES\n" + "".join(ents) + "0\nENDSEC\n0\nEOF\n")
 with open(os.path.join(OUT, "plate-24-perforated.dxf"), "w") as f:
     f.write(dxf)
-print(f"wrote plate-24-perforated.dxf ({1 + N_TOT} CUT circles + {1 + len(ROWS)} REF) — cut 2 pcs")
+print(f"wrote plate-24-perforated.dxf ({2 + N_TOT} CUT circles + {1 + len(ROWS)} REF) — cut 2 pcs")
