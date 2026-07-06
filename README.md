@@ -18,7 +18,9 @@ Behavior over the 90° door travel:
 | [`tools/generate_drawings.py`](tools/generate_drawings.py) | Generates the SVG sheets from the design parameters |
 | [`docs/PLATE-OPTIMIZATION.md`](docs/PLATE-OPTIMIZATION.md) | Rotary damper plates (Rev B): sealing rules, architecture trade study, optimization record |
 | [`drawings/plate-24-perforated.*`](drawings/) | Waterjet fabrication print (SVG/PDF) + cut-ready DXF — Ø24 damper plate, QTY 2 identical |
-| [`tools/generate_plate_drawing.py`](tools/generate_plate_drawing.py) | Generates the plate print and DXF |
+| [`tools/generate_plate_drawing.py`](tools/generate_plate_drawing.py) | Generates the damper plate print and DXF |
+| [`drawings/pizza-plate-24.*`](drawings/) | 24" pizza cooking plate (vertical smoker): fab print (SVG/PDF), single-contour DXF, STL solid |
+| [`tools/generate_pizza_plate.py`](tools/generate_pizza_plate.py) | Parametric generator for the pizza plate (contour, DXF, STL, print) |
 
 The worked example assumes a 24" OD × ¼"-wall chamber with a 120° × 30" top-hinged
 door; every number is parametric — see `docs/DESIGN.md` §4 or plug real dimensions
