@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 """Generate the waterjet fabrication print + DXF for the rotary damper plates.
 
-REV C — outer row enlarged per design review (2-3x Rev B's 1.740):
-each row now carries its own hole diameter, sized to its own radius,
-with the same hole count (5 spokes) in both rows so the pair still
-seals at a single twist angle with monotonic flow.
+REV D — edge rule corrected per review: OD-to-hole gap = 0.5 x the
+row-1 hole diameter (not a flat 0.500). Row 1 re-solved: Ø4.000 at
+R8.000 -> gap exactly 2.000. Row 2: Ø1.500 at R3.000. Same count
+(5 spokes) both rows preserves single-angle shutoff + monotonic flow.
 
-Rules held: hole edge to OD gap = 0.500 min (outer row sits at exactly
-0.500), c-c >= 2.5 x that row's dia (web >= 1.5 x dia), radial web =
-1.5 x inner dia, hub Ø3.5 solid. Verified: closed-position min
-edge-to-edge cover 0.463 over all pairs; flow 100%->0% monotonic over
-36 deg; open area 94.4 in^2 (20.9%).
+Rules held: edge gap 2.000 = 0.5 x Ø, c-c >= 2.5 x dia each row
+(web >= 1.5 x dia), radial web 2.250 = 1.5 x inner dia, hub Ø3.5
+solid. Verified: closed-position min cover 0.354 over all pairs;
+flow 100%->0% monotonic over 36 deg; open area 71.7 in^2 (15.8%).
 
 Outputs: drawings/plate-24-perforated.svg, drawings/plate-24-perforated.dxf
 """
@@ -24,7 +23,7 @@ HUB_D = 3.5
 N_SPOKE = 5               # same count per row -> single shutoff angle
 TWIST = 180.0 / N_SPOKE   # 36 deg to full close
 # (radius, count, first-hole deg, hole dia)
-ROWS = [(9.200, N_SPOKE, 0.0, 4.600), (3.500, N_SPOKE, 0.0, 1.700)]
+ROWS = [(8.000, N_SPOKE, 0.0, 4.000), (3.000, N_SPOKE, 0.0, 1.500)]
 N_TOT = sum(n for _, n, _, _ in ROWS)
 OPEN = sum(n * math.pi * D * D / 4 for _, n, _, D in ROWS)
 WEIGHT = (math.pi * R_PLATE**2 - OPEN) * 0.375 * 0.284
@@ -113,39 +112,40 @@ sa = 144.0
 p1, p2 = T(*pol(ROWS[0][0], sa)), T(*pol(ROWS[1][0], sa))
 line(p1[0], p1[1], p2[0], p2[1], sw=0.8, m1=True, m2=True)
 leader((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2, CX - 215, CY + 330,
-       "5.700 ROW PITCH, WEB 2.550", anchor="end")
+       "5.000 ROW PITCH, WEB 2.250", anchor="end")
 
 # ---- in-row spacing dim between two inner holes (chord 4.398)
 q1, q2 = T(*pol(ROWS[1][0], 216)), T(*pol(ROWS[1][0], 288))
 line(q1[0], q1[1], q2[0], q2[1], sw=0.8, m1=True, m2=True)
 leader((q1[0] + q2[0]) / 2, (q1[1] + q2[1]) / 2, CX - 60, CY + 400,
-       "4.398 C-C ROW 2 (2.59×Ø)", anchor="end")
+       "3.770 C-C ROW 2 (2.51×Ø)", anchor="end")
 
 # ---- angular pitch between spokes
 steps = 24
-apts = [T(*pol(6.6, 0 + 72.0 * i / steps)) for i in range(steps + 1)]
+apts = [T(*pol(5.4, 0 + 72.0 * i / steps)) for i in range(steps + 1)]
 d = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in apts)
 raw(f'<path d="{d}" stroke="{BLACK}" stroke-width="0.8" fill="none" '
     f'marker-start="url(#as)" marker-end="url(#ae)"/>')
-am = T(*pol(7.0, 36))
+am = T(*pol(5.85, 36))
 text(am[0], am[1], "72.0°", size=13, anchor="middle")
 
 # ---- hole diameter callouts
 hc = pol(ROWS[0][0], 144)
 he = T(hc[0] + (ROWS[0][3] / 2) * math.cos(math.radians(170)),
        hc[1] + (ROWS[0][3] / 2) * math.sin(math.radians(170)))
-leader(he[0], he[1], he[0] + 40, he[1] - 138, "Ø4.600 THRU, 5 PLCS (ROW 1)")
+leader(he[0], he[1], he[0] + 40, he[1] - 138, "Ø4.000 THRU, 5 PLCS (ROW 1)")
 hc2 = pol(ROWS[1][0], 72)
 he2 = T(hc2[0], hc2[1] + ROWS[1][3] / 2)
-leader(he2[0], he2[1], he2[0] + 55, he2[1] - 105, "Ø1.700 THRU, 5 PLCS (ROW 2)")
+leader(he2[0], he2[1], he2[0] + 55, he2[1] - 105, "Ø1.500 THRU, 5 PLCS (ROW 2)")
 
 # ---- edge margin (outer hole at 0 deg): hole edge r=11.5 to plate edge r=12
-q1, q2 = T(R_PLATE - 0.5, 0), T(R_PLATE, 0)
+q1, q2 = T(R_PLATE - 2.0, 0), T(R_PLATE, 0)
 line(q1[0], q1[1], q2[0], q2[1], sw=0.8)
 line(q1[0], q1[1] - 8, q1[0], q1[1] + 8, sw=0.8)
 line(q2[0], q2[1] - 8, q2[0], q2[1] + 8, sw=0.8)
-leader((q1[0] + q2[0]) / 2, q1[1], (q1[0] + q2[0]) / 2 - 7, q1[1] + 125,
-       "OD GAP .500 MIN", anchor="end")
+line(q1[0], q1[1], q2[0], q2[1], sw=0.8, m1=True, m2=True)
+leader((q1[0] + q2[0]) / 2, q1[1], (q1[0] + q2[0]) / 2 + 3, q1[1] + 165,
+       "OD GAP 2.000 (0.5×Ø MIN)", anchor="end")
 
 # ---- hub leader
 hb = T(*pol(HUB_D / 2, 250))
@@ -154,7 +154,7 @@ leader(hb[0], hb[1], 300, 920, "Ø3.500 SOLID HUB — NO CUTS", anchor="end")
 # ---- outer row radius dim
 rr = T(*pol(ROWS[0][0], 200))
 line(CX, CY, rr[0], rr[1], sw=0.8, m2=True)
-text(CX + 0.62 * (rr[0] - CX) - 4, CY + 0.62 * (rr[1] - CY) + 24, "R9.200", size=13)
+text(CX + 0.62 * (rr[0] - CX) - 4, CY + 0.62 * (rr[1] - CY) + 24, "R8.000", size=13)
 
 # ---- twist arrow annotation (top)
 tw_pts = [T(*pol(R_PLATE + 0.55, 122 - i)) for i in range(0, 37, 3)]
@@ -192,13 +192,14 @@ notes = [
     ("   HOLE ONTO SOLID WEB = FULL SHUTOFF. FLOW IS", False),
     ("   MONOTONIC: 9°=61%, 18°=26%, 27°=2%, 36°=0%.", False),
     ("4. SEALING RULE: WEB ≥ 1.5×Ø IN EACH ROW (C-C ≥ 2.5×Ø).", False),
-    ("   CLOSED-POSITION SEAL COVER .463 MIN, VERIFIED OVER", False),
-    ("   ALL HOLE PAIRS. RADIAL WEB 2.550 (1.5× ROW-2 Ø).", False),
+    ("   CLOSED-POSITION SEAL COVER .354 MIN, VERIFIED OVER", False),
+    ("   ALL HOLE PAIRS. RADIAL WEB 2.250 (1.5× ROW-2 Ø).", False),
+    ("   OD-TO-HOLE GAP ≥ 0.5× ROW-1 Ø = 2.000.", False),
     ("5. 10 HOLES ON 5 RADIAL SPOKES × 2 ROWS; DIA PER ROW", False),
     ("   PER TABLE. SAME COUNT PER ROW REQUIRED SO BOTH", False),
     ("   ROWS CLOSE AT ONE TWIST ANGLE.", False),
-    ("6. OPEN AREA (ALIGNED) 94.4 SQ IN = 20.9% OF GROSS.", False),
-    ("   EST. WEIGHT 38.1 LB PER PLATE.", False),
+    ("6. OPEN AREA (ALIGNED) 71.7 SQ IN = 15.8% OF GROSS.", False),
+    ("   EST. WEIGHT 40.5 LB PER PLATE.", False),
     ("7. CUT GEOMETRY: plate-24-perforated.dxf (CUT LAYER).", False),
     ("   KERF COMP BY SHOP. THIS PRINT GOVERNS DIMS.", False),
     ("8. TOLERANCES UNLESS NOTED: .XXX ±.015, ANGLES ±0.5°.", False),
@@ -212,8 +213,8 @@ ty = 52 + len(notes) * 20 + 22
 text(NX, ty, "HOLE PATTERN TABLE", size=13.5, weight="bold")
 cols = [NX, NX + 52, NX + 140, NX + 240, NX + 292, NX + 396, NX + 490]
 hdr = ["ROW", "RADIUS", "HOLE Ø", "QTY", "FIRST HOLE", "PITCH"]
-rows_tbl = [("1", "9.200", "4.600", "5", "0.0°", "72.0°"),
-            ("2", "3.500", "1.700", "5", "0.0°", "72.0°"),
+rows_tbl = [("1", "8.000", "4.000", "5", "0.0°", "72.0°"),
+            ("2", "3.000", "1.500", "5", "0.0°", "72.0°"),
             ("", "", "TOTAL", "10", "", "")]
 th = 24
 line(cols[0], ty + 10, cols[6], ty + 10, sw=1.2)
@@ -244,7 +245,7 @@ for r, n, ph, D in ROWS:
                D / 2 * ISC, sw=1.0, dash="4 3")
 text(IX, IY + R_PLATE * ISC + 20, "CLOSED POSITION — TOP PLATE +36.0° (DASHED)",
      size=12.5, anchor="middle")
-text(IX, IY + R_PLATE * ISC + 38, "EVERY HOLE ON SOLID WEB, .463 MIN COVER",
+text(IX, IY + R_PLATE * ISC + 38, "EVERY HOLE ON SOLID WEB, .354 MIN COVER",
      size=12.5, anchor="middle")
 
 # ---- title block
@@ -258,10 +259,10 @@ line(bx + 310, by + 32, bx + 310, by + bh, sw=1)
 text(bx + 12, by + 22, "OFFSET SMOKER PROJECT — WATERJET FABRICATION PRINT",
      size=14.5, weight="bold")
 text(bx + 12, by + 52, "ROTARY DAMPER PLATE, Ø24.00 (PAIR)", size=13.5)
-text(bx + 322, by + 52, "DWG NO: WPZ-PLT-001  REV C", size=12.5)
+text(bx + 322, by + 52, "DWG NO: WPZ-PLT-001  REV D", size=12.5)
 text(bx + 12, by + 82, "MATL: ASTM A36 · THK .375 · QTY 2", size=12.5)
 text(bx + 322, by + 82, "SCALE: 34 PX/IN · UNITS: IN", size=12.5)
-text(bx + 12, by + 110, "REV C: ROW 1 ENLARGED PER REVIEW", size=12)
+text(bx + 12, by + 110, "REV D: OD GAP = 0.5×Ø (2.000)", size=12)
 text(bx + 322, by + 110, "SHT 1/1 · 2026-07-06", size=12.5)
 
 svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '

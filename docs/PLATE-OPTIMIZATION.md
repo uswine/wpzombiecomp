@@ -1,32 +1,30 @@
-# Rotary Damper Plates — Design & Optimization Record (Rev C)
+# Rotary Damper Plates — Design & Optimization Record (Rev D)
 
-**Part:** WPZ-PLT-001 Rev C — Ø24.00 × .375 A36, waterjet cut, **QTY 2 identical**
+**Part:** WPZ-PLT-001 Rev D — Ø24.00 × .375 A36, waterjet cut, **QTY 2 identical**
 **Print:** `drawings/plate-24-perforated.svg` / `.pdf` · **CAM geometry:** `drawings/plate-24-perforated.dxf`
 
-## Rev C — outer row enlarged (current)
+## Rev D — half-diameter edge gap (current)
 
-Review direction: outer-row holes 2–3× the Rev B Ø1.740, and OD-to-hole gap held
-at 0.500" min. Key insight enabling this: with the same hole *count* per row, each
-row can carry its **own diameter** sized to its own radius — common shutoff and
-monotonic flow are preserved. Rev B wasted the outer row (Ø1.74 holes spaced 7.4"
-apart because the inner row dictated everything).
+Review corrections applied in sequence: (Rev C) outer-row holes 2–3× the Rev B
+Ø1.740 via per-row diameters; (Rev D) the OD-to-hole gap scales with hole size —
+**gap ≥ 0.5 × the row-1 hole diameter**, not a flat 0.500". Same hole count per
+row (5 spokes) preserves single-angle shutoff and monotonic flow.
+
+With gap = D/2 the outer row solves to: r₁ = 12 − D₁, and the in-row spacing rule
+2πr₁/5 ≥ 2.5·D₁ caps D₁ at 4.014 → **Ø4.000 at R8.000** (gap exactly 2.000).
 
 | Parameter | Value |
 |---|---|
-| Pattern | **5 spokes × 2 rows: Row 1 = 5 × Ø4.600 at R9.200, Row 2 = 5 × Ø1.700 at R3.500** |
-| Outer row vs Rev B | Ø4.600 = **2.64×** Ø1.740 |
-| OD-to-hole gap | **0.500 exact** (R9.200 + Ø4.600/2 = 11.500) |
-| Spacing | Row 1 c-c 11.561 (2.51×Ø), Row 2 c-c 4.398 (2.59×Ø), radial web 2.550 (1.5× row-2 Ø) |
+| Pattern | **5 spokes × 2 rows: Row 1 = 5 × Ø4.000 at R8.000, Row 2 = 5 × Ø1.500 at R3.000** |
+| Outer row vs Rev B | Ø4.000 = **2.30×** Ø1.740 |
+| OD-to-hole gap | **2.000 = 0.5×Ø exact** |
+| Spacing | Row 1 c-c 10.053 (2.51×Ø), Row 2 c-c 3.770 (2.51×Ø), radial web 2.250 (1.5× row-2 Ø) |
 | Shutoff twist | **36.0°** (= 180/5) |
 | Flow vs twist | 9°=61%, 18°=26%, 27°=2%, 36°=0% — monotonic (verified) |
-| Closed seal cover | **0.463" minimum** over all fixed-vs-rotated pairs |
-| Open area (aligned) | **94.4 in² = 20.9%** (was 42.8 in² in Rev B — 2.2×) |
-| Hub | inner hole edge at R2.650 vs hub R1.750 → 0.900 clear |
-| Weight | 38.1 lb per plate |
-
-Alternative sized during the sweep: 7 spokes × 2 rows (Ø3.500 outer / Ø1.650
-inner) = 82.3 in², twist 25.7° — choose this if a finer-grained look is preferred
-over the last 12 in² of flow.
+| Closed seal cover | **0.354" minimum** over all fixed-vs-rotated pairs |
+| Open area (aligned) | **71.7 in² = 15.8%** (Rev B 42.8 → Rev C 94.4 → Rev D 71.7) |
+| Hub | inner hole edge at R2.250 vs hub R1.750 → 0.500 clear |
+| Weight | 40.5 lb per plate |
 
 ---
 
