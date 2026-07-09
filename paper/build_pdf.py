@@ -27,7 +27,7 @@ hr { border: none; border-top: 0.5pt solid #aaa; margin: 14pt 0; }
 
 pdf = MarkdownPdf(toc_level=2, optimize=True)
 pdf.add_section(Section(md, paper_size="A4", borders=(50, 45, -50, -45)), user_css=CSS)
-pdf.meta["title"] = "A No-Go Theorem for the Relativistic Propulsion of Macroscopic Condensed Matter"
+pdf.meta["title"] = "Why Rocks Do Not Go 0.99c — A Coupling-Class Impossibility Argument"
 pdf.meta["author"] = "Allen Hall"
 pdf.save(str(HERE / "no-go-theorem.pdf"))
 print("wrote", HERE / "no-go-theorem.pdf")

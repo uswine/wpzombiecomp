@@ -173,10 +173,10 @@ print("="*72)
 # Relativistic rocket equation: Delta-v with exhaust speed w:
 # m0/m1 = [ (1+b)/(1-b) ]^{c/(2w)}
 print("Mass ratios m0/m1 to reach beta (relativistic rocket eqn):")
-print(f"{'beta':>6} {'w=0.00005c(chem)':>18} {'w=0.05c(fission frag)':>22} {'w=0.1c(fusion)':>16} {'w=c(photon)':>12}")
+print(f"{'beta':>6} {'w=1.5e-5c(chem)':>18} {'w=0.05c(fission frag)':>22} {'w=0.1c(fusion)':>16} {'w=c(photon)':>12}")
 for b in (0.1,0.5,0.9,0.99):
     row=[]
-    for w in (0.00005,0.05,0.1,1.0):
+    for w in (1.5e-5,0.05,0.1,1.0):
         log10MR = math.log10((1+b)/(1-b))/(2*w)
         row.append(log10MR)
     def fmt(l):
@@ -253,3 +253,33 @@ for Mb in (10,1e3,1e6,4.3e6):
     v_loc=math.sqrt(x/(1-2*x))  # v/c for circular orbit measured locally
     print(f"M={Mb:9.1e} Msun: r_strength={r_s/1e3:12.1f} km, r_ISCO={r_i/1e3:12.1f} km "
           f"-> {governs:9s} governs; local v_circ at limit = {v_loc:.3f} c")
+
+
+print()
+print("="*72)
+print("SECTION I: REVIEW-ROUND ADDITIONS")
+print("="*72)
+# rapidity compounding of chained boosts
+w5 = math.atanh(0.5); w99 = math.atanh(0.99)
+print(f"rapidity w(0.5c)={w5:.4f}, w(0.99c)={w99:.4f} -> ideal 0.5c boosts needed: {w99/w5:.2f}")
+# magnetic rigidity of 5.7 GeV proton
+p_MeV = math.sqrt((6.0888+1)**2 - 1)*938.272  # p*c in MeV for gamma=7.0888... total E=gamma*m
+p_MeV = math.sqrt((7.0888*938.272)**2 - 938.272**2)/1.0
+print(f"proton at gamma=7.089: p = {p_MeV:.0f} MeV/c, rigidity = {p_MeV/1000:.2f} GV")
+p_SI = p_MeV*1e6*1.602176634e-19/c
+for B in (1.0, 10.0):
+    print(f"  gyroradius at B={B:.0f} T: {p_SI/(1.602176634e-19*B):.1f} m")
+# chirped-transmitter endpoint
+print(f"chirped source endpoint to hold sail-frame at 1 um: 1000 nm / 14.1 = {1000/14.107:.1f} nm (VUV)")
+print(f"  photon energy at 70.9 nm: {1239.8/70.9:.1f} eV (exceeds every optical-material bandgap)")
+# low-density environments at 0.99c
+b=0.99; gm=gamma(b)
+for nn in (0.01, 1e-5):
+    P = nn*1e6*gm*b*c*(gm-1)*mpc2_J
+    print(f"n={nn:g} cm^-3: P = {P:.3g} W/m^2, T_eq(2-face) = {(P/(2*sigma))**0.25:.0f} K")
+# chemical exponents corrected (w = 1.5e-5 c = 4.5 km/s)
+for bb in (0.1,0.5,0.9,0.99):
+    print(f"chemical w=1.5e-5c, beta={bb}: log10(m0/m1) = {math.log10((1+bb)/(1-bb))/(2*1.5e-5):,.0f}")
+# asteroid equivalent of 3e11 kg
+r = (3e11/2000/(4/3*math.pi))**(1/3)
+print(f"3e11 kg at rho=2000: diameter = {2*r:.0f} m (Ceres = 9.4e20 kg, ratio {9.4e20/3e11:.1e})")

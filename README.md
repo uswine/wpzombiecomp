@@ -32,6 +32,6 @@ into the calculator.
 
 ## Also in this repository
 
-**[`paper/`](paper/)** — *A No-Go Theorem for the Relativistic Propulsion of Macroscopic
-Condensed Matter*: research paper (Markdown + PDF) with verification script. See
-[`paper/README.md`](paper/README.md).
+**[`paper/`](paper/)** — *Why Rocks Do Not Go 0.99c* (a coupling-class impossibility
+argument for intact macroscopic condensed matter at β ≈ 0.99): research paper
+(Markdown + PDF) with verification script. See [`paper/README.md`](paper/README.md).

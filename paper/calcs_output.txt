@@ -77,11 +77,11 @@ gamma(0.5c) = 1.155, KE = 0.155 mc^2 -- vs required gamma 7.09: shortfall x39 in
 SECTION E: TIER 4 -- ONBOARD PROPULSION ARITHMETIC
 ========================================================================
 Mass ratios m0/m1 to reach beta (relativistic rocket eqn):
-  beta   w=0.00005c(chem)  w=0.05c(fission frag)   w=0.1c(fusion)  w=c(photon)
-  0.10             10^872              7.439e+00        2.727e+00         1.11
-  0.50            10^4771              5.905e+04        2.430e+02         1.73
-  0.90           10^12788              6.131e+12        2.476e+06         4.36
-  0.99           10^22989                  10^23        3.121e+11        14.11
+  beta    w=1.5e-5c(chem)  w=0.05c(fission frag)   w=0.1c(fusion)  w=c(photon)
+  0.10            10^2905              7.439e+00        2.727e+00         1.11
+  0.50           10^15904              5.905e+04        2.430e+02         1.73
+  0.90           10^42625              6.131e+12        2.476e+06         4.36
+  0.99           10^76628                  10^23        3.121e+11        14.11
 
 Waste-heat table (onboard conversion at efficiency eta_c, radiate at P_rej):
 KE(beta) per kg payload; waste heat W = KE*(1-eta)/eta; time = W/P_rej
@@ -125,3 +125,20 @@ M=  1.0e+01 Msun: r_strength=       215.1 km, r_ISCO=        88.6 km -> strength
 M=  1.0e+03 Msun: r_strength=       998.5 km, r_ISCO=      8861.6 km -> ISCO      governs; local v_circ at limit = 0.500 c
 M=  1.0e+06 Msun: r_strength=      9985.2 km, r_ISCO=   8861624.9 km -> ISCO      governs; local v_circ at limit = 0.500 c
 M=  4.3e+06 Msun: r_strength=     16237.2 km, r_ISCO=  38104987.0 km -> ISCO      governs; local v_circ at limit = 0.500 c
+
+========================================================================
+SECTION I: REVIEW-ROUND ADDITIONS
+========================================================================
+rapidity w(0.5c)=0.5493, w(0.99c)=2.6467 -> ideal 0.5c boosts needed: 4.82
+proton at gamma=7.089: p = 6585 MeV/c, rigidity = 6.58 GV
+  gyroradius at B=1 T: 22.0 m
+  gyroradius at B=10 T: 2.2 m
+chirped source endpoint to hold sail-frame at 1 um: 1000 nm / 14.1 = 70.9 nm (VUV)
+  photon energy at 70.9 nm: 17.5 eV (exceeds every optical-material bandgap)
+n=0.01 cm^-3: P = 1.93e+04 W/m^2, T_eq(2-face) = 642 K
+n=1e-05 cm^-3: P = 19.3 W/m^2, T_eq(2-face) = 114 K
+chemical w=1.5e-5c, beta=0.1: log10(m0/m1) = 2,905
+chemical w=1.5e-5c, beta=0.5: log10(m0/m1) = 15,904
+chemical w=1.5e-5c, beta=0.9: log10(m0/m1) = 42,625
+chemical w=1.5e-5c, beta=0.99: log10(m0/m1) = 76,628
+3e11 kg at rho=2000: diameter = 659 m (Ceres = 9.4e20 kg, ratio 3.1e+09)

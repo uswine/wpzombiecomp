@@ -1,8 +1,14 @@
-# A No-Go Theorem for the Relativistic Propulsion of Macroscopic Condensed Matter
+# Why Rocks Do Not Go 0.99c
 
-Research paper establishing that accelerating ordinary macroscopic condensed matter
-(intact solids ≥ 1 cm) to β = 0.99 is prohibited under known physics, via a proof by
-cases over an exhaustive classification of physical couplings.
+*A Coupling-Class Impossibility Argument for Intact Macroscopic Condensed Matter at
+β ≈ 0.99 in Ordinary Interstellar Environments.*
+
+Research paper arguing that, under known physics, no demonstrated or physically credible
+pathway both accelerates an ordinary macroscopic condensed body (intact solid ≥ 1 cm) to
+β = 0.99 and transports it intact through ordinary interstellar matter — a proof by cases
+over an exhaustive coupling classification, with every closure tagged [I] contradiction /
+[P] rarity / [E] engineering scale. Draft 2, revised after a second adversarial review
+round (corrections logged in the paper's Appendix B).
 
 ## Contents
 
@@ -23,14 +29,17 @@ python3 build_pdf.py      # rebuild the PDF
 
 ## Structure of the argument
 
-- **Case G (gravity)** — the unique heat-free coupling, kinematically capped at ~0.5c
-  by the ISCO orbital speed (mass-independent), ≲0.7c with Kerr spin. Closed by dynamics.
+- **Case G (gravity)** — the unique heat-free coupling; closed channel-by-channel: flybys
+  are elastic, moving-hole gains cap at ~0.03c/pass, bound-exchange ejection caps near the
+  ISCO speed ~0.5c per encounter, and chains die because exchange capture collapses above
+  the first boost's exit speed.
 - **Case M-environmental (interstellar medium)** — propulsion-independent keystone: at
   0.99c the ISM is a 5.7 GeV/nucleon hadron beam depositing ~2 MW/m² at mean density;
   equilibrium temperature exceeds the melting point of ordinary solids.
-- **Case EM-γ (beamed sail)** — the ppm absorptivity floor cannot survive the 14× Doppler
-  sweep; emissivity of sub-micron films closes the pincer; thermal–diffraction scissors
-  force planetary-scale apertures.
+- **Case EM-γ (beamed sail)** — the 14× Doppler factor is a conserved burden: fixed-frequency
+  systems impose it on the sail, chirped transmitters relocate it to 71-nm VUV source optics;
+  no measured material class carries it at either end. Emissivity and the thermal–diffraction
+  scissors close the rest.
 - **Cases M-rocket / EM-s (onboard & structured force)** — relativistic mass ratios and
   waste-heat inequalities; strength-capped acceleration forces 110+ AU track lengths.
 - **Boundary cases** owned explicitly (eon-timescale burns, sub-0.5c gravitational flukes,
