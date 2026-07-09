@@ -1,0 +1,127 @@
+========================================================================
+SECTION A: KINEMATIC ANCHORS
+========================================================================
+beta= 0.10  gamma= 1.0050  KE/mc^2=  0.0050  KE=4.528e+14 J/kg
+beta= 0.20  gamma= 1.0206  KE/mc^2=  0.0206  KE=1.853e+15 J/kg
+beta= 0.50  gamma= 1.1547  KE/mc^2=  0.1547  KE=1.390e+16 J/kg
+beta= 0.90  gamma= 2.2942  KE/mc^2=  1.2942  KE=1.163e+17 J/kg
+beta= 0.99  gamma= 7.0888  KE/mc^2=  6.0888  KE=5.472e+17 J/kg
+
+At 0.99c: gamma = 7.0888, KE = 6.089 mc^2 = 5.472e+17 J/kg
+Reflected-beam Doppler factor (1-b)/(1+b) = 0.00503 = 1/199.0
+Sail-frame incident redshift over 0->0.99c: sqrt((1+b)/(1-b)) = 14.11x
+Photon->sail momentum-transfer energy efficiency 2b/(1+b) = 0.9950
+Incident beam energy to reach 0.99c: 5.890e+17 J/kg  (KE=5.472e+17)
+
+========================================================================
+SECTION B: TIER 1 -- ISM FRONTAL HEATING (thick body, full stopping)
+========================================================================
+ISM density n = 1 cm^-3 = 1.0e+06 m^-3 (warm neutral medium)
+  beta    gamma  E/atom(GeV)  flux(m-2 s-1)    P(W/m^2) T_eq,1face(K) T_eq,2face(K)
+  0.10    1.005        0.005      3.013e+13   2.282e+01           142           119
+  0.20    1.021        0.019      6.119e+13   1.897e+02           240           202
+  0.30    1.048        0.045      9.428e+13   6.843e+02           331           279
+  0.50    1.155        0.145      1.731e+14   4.025e+03           516           434
+  0.70    1.400        0.376      2.939e+14   1.768e+04           747           628
+  0.90    2.294        1.214      6.190e+14   1.204e+05          1207          1015
+  0.99    7.089        5.713      2.104e+15   1.926e+06          2414          2030
+
+6 GeV proton in SiO2: nuclear interaction length ~66 g/cm^2 ~ 25 cm;
+hadronic cascade deposits bulk of energy within ~1 m: 'thick' = anything >~1 m.
+Thin films (1 g/m^2 = 1e-4 g/cm^2): minimum-ionizing dE/dx ~ 2 MeV/(g/cm^2)
+ -> deposited per proton ~ 200 eV; deposited power at 0.99c:
+    0.067 W/m^2  (tiny -- but see sputtering/track damage below)
+Erosion: Y= 1 atoms/ion -> 1 mm eroded per 2927.44 pc traveled
+Erosion: Y=10 atoms/ion -> 1 mm eroded per 292.74 pc traveled
+
+========================================================================
+SECTION C: TIER 3a -- THERMAL/DIFFRACTION SCISSORS (beamed sail)
+========================================================================
+Case 1: handoff baseline. rho_A=1 g/m^2, alpha=1e-6, eps=1, T=1000K, s=30m, D=100km
+  t_min(thermal) = 5.194e+03 s (1.44 h); d_max = 7.7 AU; t_max(diffraction) = 4.430e+03 s (1.23 h)
+  distance covered in t_min at <beta>~0.87: 9.1 AU
+  aperture needed for s=30 m sail: D = 117 km
+
+Case 2: realistic broadband alpha=1e-4 (14x Doppler sweep), eps=0.05 (thin film):
+  t_min = 1.039e+07 s = 0.3 yr -> aperture D = 2.34e+05 km  (absurd)
+
+General scissors condition: t_min <= t_max  =>  D >= 2.44 lam <beta> c alpha E_inc rho_A/(2 eps sigma T^4 s)
+   alpha   eps   T(K)   s(m)    rho_A        D_req
+   1e-06  1.00   1000     30    1e-03       117 km
+   1e-06  0.50   1500     30    1e-03        46 km
+   1e-05  0.10   1500    100    1e-03       695 km
+   1e-04  0.05   1000     30    1e-03    234447 km
+   1e-06  1.00   2000   1000    1e-03         0 km
+   1e-07  1.00   2000   1000    1e-03         0 km
+
+Beam power: E_inc/t_min per kg, baseline: 1.13e+14 W/kg
+Mean acceleration baseline ~ 0.99c/5194s = 5825 g
+
+========================================================================
+SECTION D: TIER 0 -- GRAVITATIONAL SLINGSHOT CEILING
+========================================================================
+BH 1e+01 Msun: r_ISCO = 88.6 km; local orbital speed at ISCO = c/2
+  tidal gradient 2GM/r^3 at ISCO = 3.815e+06 s^-2 (per meter separation)
+  tidal stress on 1-m rock ~ rho*tide*L^2/2 = 1430621328.1 Pa vs strength 1e8-1e9 Pa
+  strength-limited r_min (S=1e8Pa, 1m rock) = 215.12 km (outside ISCO -> ISCO governs)
+BH 1e+06 Msun: r_ISCO = 8861624.9 km; local orbital speed at ISCO = c/2
+  tidal gradient 2GM/r^3 at ISCO = 3.815e-04 s^-2 (per meter separation)
+  tidal stress on 1-m rock ~ rho*tide*L^2/2 = 0.1 Pa vs strength 1e8-1e9 Pa
+  strength-limited r_min (S=1e8Pa, 1m rock) = 9985.16 km (inside ISCO -> ISCO governs)
+Kerr a*->1 prograde: ISCO -> GM/c^2, circular-orbit speeds push toward ~0.7c (extremal heroics)
+Hills-type ejection from binary: v_ej ~ sqrt(v_orb * v_binary) geometric mean;
+ejection at infinity <~ pericenter orbital speed; ceiling ~0.5c Schwarzschild.
+gamma(0.5c) = 1.155, KE = 0.155 mc^2 -- vs required gamma 7.09: shortfall x39 in energy
+
+========================================================================
+SECTION E: TIER 4 -- ONBOARD PROPULSION ARITHMETIC
+========================================================================
+Mass ratios m0/m1 to reach beta (relativistic rocket eqn):
+  beta   w=0.00005c(chem)  w=0.05c(fission frag)   w=0.1c(fusion)  w=c(photon)
+  0.10             10^872              7.439e+00        2.727e+00         1.11
+  0.50            10^4771              5.905e+04        2.430e+02         1.73
+  0.90           10^12788              6.131e+12        2.476e+06         4.36
+  0.99           10^22989                  10^23        3.121e+11        14.11
+
+Waste-heat table (onboard conversion at efficiency eta_c, radiate at P_rej):
+KE(beta) per kg payload; waste heat W = KE*(1-eta)/eta; time = W/P_rej
+  beta   KE (J/kg) |  eta=0.8 W(J/kg)    t@200W/kg   t@1kW/kg |  eta=0.99 W   t@1kW/kg
+  0.10   4.528e+14 |        1.132e+14    17934.5yr   3586.9yr |   4.573e+12    144.9yr
+  0.50   1.390e+16 |        3.476e+15   550730.7yr 110146.1yr |   1.404e+14   4450.3yr
+  0.90   1.163e+17 |        2.908e+16  4607173.1yr 921434.6yr |   1.175e+15  37229.7yr
+  0.99   5.472e+17 |        1.368e+17 21676043.8yr 4335208.8yr |   5.528e+15 175160.0yr
+
+Photon rocket to 0.99c: m0/m1 = gamma(1+beta) = 14.11
+  energy radiated as exhaust per kg final: 6.307e+17 J = 7.02 mc^2
+
+========================================================================
+SECTION F: DOPPLER BAND / EMISSIVITY
+========================================================================
+Sail-frame frequency sweep 0->0.99c: factor sqrt((1+b)/(1-b)) = 14.1
+eps= 1.00: equilibrium T for baseline absorbed power 6.66e+07 W/kg =    875 K
+eps= 0.10: equilibrium T for baseline absorbed power 6.66e+07 W/kg =   1556 K
+eps= 0.05: equilibrium T for baseline absorbed power 6.66e+07 W/kg =   1851 K
+eps= 0.01: equilibrium T for baseline absorbed power 6.66e+07 W/kg =   2768 K
+
+========================================================================
+SECTION G: TIER 1 SUPPLEMENTS -- dust impacts, shield mass, transit dose
+========================================================================
+0.1-um grain mass 8.38e-18 kg; impact energy at 0.99c = 4.58 J each
+grain flux = 4200.573 m^-2 s^-1 -> 1.33e+11 impacts/m^2/yr
+dust kinetic power = 1.93e+04 W/m^2 (adds to 1.93e+06 gas)
+graphite nuclear interaction length ~86 g/cm^2 = 39 cm;
+5 lambda shield ~ 4290 kg/m^2 = 4.3e+06x the 1 g/m^2 sail areal budget
+10 pc transit at 0.99c: 32.9 yr (lab), proton fluence 2.19e+24 /m^2,
+  integrated frontal energy 2.00e+15 J/m^2
+Frontal equilibrium T at 0.99c vs ISM density (radiate 2 faces):
+  n=   0.1 cm^-3: P=1.93e+05 W/m^2, T_eq=1142 K
+  n=   1.0 cm^-3: P=1.93e+06 W/m^2, T_eq=2030 K
+  n=  10.0 cm^-3: P=1.93e+07 W/m^2, T_eq=3610 K
+  n= 100.0 cm^-3: P=1.93e+08 W/m^2, T_eq=6419 K
+Melting/sublimation anchors: silicates 1400-1900 K, Fe 1811 K, W 3695 K, graphite ~3900 K subl.
+
+SECTION H: strength-limited pericenter vs BH mass (L=1 m rock, S=1e8 Pa, rho=3000)
+M=  1.0e+01 Msun: r_strength=       215.1 km, r_ISCO=        88.6 km -> strength  governs; local v_circ at limit = 0.282 c
+M=  1.0e+03 Msun: r_strength=       998.5 km, r_ISCO=      8861.6 km -> ISCO      governs; local v_circ at limit = 0.500 c
+M=  1.0e+06 Msun: r_strength=      9985.2 km, r_ISCO=   8861624.9 km -> ISCO      governs; local v_circ at limit = 0.500 c
+M=  4.3e+06 Msun: r_strength=     16237.2 km, r_ISCO=  38104987.0 km -> ISCO      governs; local v_circ at limit = 0.500 c

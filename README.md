@@ -27,3 +27,11 @@ door; every number is parametric — see `docs/DESIGN.md` §4 or plug real dimen
 into the calculator.
 
 ![Sheet 1 — Assembly](drawings/sheet1-assembly.svg)
+
+---
+
+## Also in this repository
+
+**[`paper/`](paper/)** — *A No-Go Theorem for the Relativistic Propulsion of Macroscopic
+Condensed Matter*: research paper (Markdown + PDF) with verification script. See
+[`paper/README.md`](paper/README.md).
