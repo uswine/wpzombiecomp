@@ -27,3 +27,11 @@ door; every number is parametric — see `docs/DESIGN.md` §4 or plug real dimen
 into the calculator.
 
 ![Sheet 1 — Assembly](drawings/sheet1-assembly.svg)
+
+---
+
+## Also in this repository
+
+**[`paper/`](paper/)** — *Why Rocks Do Not Go 0.99c* (a coupling-class impossibility
+argument for intact macroscopic condensed matter at β ≈ 0.99): research paper
+(Markdown + PDF) with verification script. See [`paper/README.md`](paper/README.md).
