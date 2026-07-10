@@ -1,0 +1,53 @@
+{
+  "_comment": "Load-bearing claims from 'Why Rocks Do Not Go 0.99c'. Each is qualified independently by Perplexity Sonar. Edit/extend freely; the runner reads this file.",
+  "claims": [
+    {
+      "id": "C1-hoang-erosion",
+      "section": "§5.1, §10",
+      "claim": "At a spacecraft speed of 0.2c, interstellar dust bombardment erodes a surface layer of about 0.5 mm thickness after sweeping a gas column density N_H of about 3e17 cm^-2, per Hoang, Lazarian, Burkhart & Loeb 2017 (ApJ 837, 5). Gas bombardment damages quartz to about 0.1 mm depth over N_H about 2e18 cm^-2.",
+      "question": "According to Hoang, Lazarian, Burkhart & Loeb 2017 (ApJ 837:5, 'The Interaction of Relativistic Spacecrafts with the Interstellar Medium'), what are the quantitative dust and gas erosion depths for a spacecraft at 0.2c, and over what hydrogen column densities? Give exact figures and confirm the paper and numbers."
+    },
+    {
+      "id": "C2-guillochon-loeb",
+      "section": "§4, §10, §11",
+      "claim": "The maximum ejection speed of an intact star from black-hole encounters is about c/3 (10^5 km/s), reached only occasionally when a star is bound to the secondary of a merging massive-black-hole binary; the classical Hills single-SMBH mechanism caps near 10^4 km/s (~0.03c). Source: Guillochon & Loeb 2015, ApJ 806, 124, 'The Fastest Unbound Stars in the Universe'.",
+      "question": "In Guillochon & Loeb 2015 (ApJ 806, 124, 'The Fastest Unbound Stars in the Universe'), what is the maximum ejection velocity for hypervelocity stars, under what mechanism, and what does the classical Hills mechanism cap at? Confirm the ~c/3 (10^5 km/s) figure and the merging-MBH-binary mechanism."
+    },
+    {
+      "id": "C3-semyonov",
+      "section": "§8, §11",
+      "claim": "Oleg G. Semyonov (Acta Astronautica 99, 2014, 'Relativistic rocket: Dream and reality'; and 151, 2018, 'Pros and cons of relativistic interstellar flight') argues that thermodynamics (waste-heat radiator and power-plant dry-mass growth) and interstellar radiation hazard are the two dominant obstacles to relativistic rockets, but does NOT state a formal impossibility/no-go theorem — he proposes antimatter fuel and shielding as mitigations.",
+      "question": "What are the main conclusions of Oleg G. Semyonov's papers 'Relativistic rocket: Dream and reality' (Acta Astronautica 2014) and 'Pros and cons of relativistic interstellar flight' (Acta Astronautica 2018)? Does he conclude relativistic interstellar flight is impossible, or does he propose mitigations? Confirm the two obstacles are thermodynamics/waste-heat and radiation hazard."
+    },
+    {
+      "id": "C4-lubin-sail",
+      "section": "§7, §10, §11",
+      "claim": "Philip Lubin's 'A Roadmap to Interstellar Flight' (JBIS 69, 2016) projects that a full DE-STAR 4 (50-70 GW laser array) propels a gram-scale wafer with a 1 m sail to about 0.26c, a 100 kg payload to only about 0.01c, and a 10^5 kg payload to only >1000 km/s. Kulkarni, Lubin & Zhang 2018 confirm diffraction caps gram-scale craft near 0.2c.",
+      "question": "In Philip Lubin's 'A Roadmap to Interstellar Flight' (2016), what final velocities does DE-STAR 4 achieve for a gram-scale wafer sail versus a 100 kg payload versus a 10^5 kg payload? Confirm the ~0.26c for wafer, ~0.01c for 100 kg figures."
+    },
+    {
+      "id": "C5-no-prior-nogo",
+      "section": "§11",
+      "claim": "No published paper states a formal no-go theorem or coupling-class impossibility argument specifically for accelerating and transporting intact macroscopic condensed matter (rocks/spacecraft, not particles/plasma/dust) to ~0.99c through the interstellar medium.",
+      "question": "Is there any published paper that proves or argues a formal 'no-go theorem' or general impossibility that ordinary macroscopic condensed matter (a solid object, not particles or plasma or dust) cannot be accelerated to and survive transport at ~0.99c (99% of light speed) through the interstellar medium under known physics? List any candidates and note whether each actually makes an impossibility claim at ~0.99c."
+    },
+    {
+      "id": "C6-yurtsever-wilkinson",
+      "section": "§11",
+      "claim": "Yurtsever & Wilkinson 2018 (Acta Astronautica 142, arXiv:1503.05845) prove the CMB plus interstellar matter imposes a sub-light speed ceiling on macroscopic baryonic objects, with the pair-production threshold binding at gamma(1+beta) >= 2.47e8, i.e. gamma ~ 1e8 — far beyond gamma=7 (0.99c).",
+      "question": "In Yurtsever & Wilkinson 'Limits and Signatures of Relativistic Spaceflight' (arXiv:1503.05845 / Acta Astronautica 2018), at what Lorentz factor does the cosmic microwave background impose a speed limit on a macroscopic spacecraft via electron-positron pair production, and what is the threshold condition? Confirm it binds near gamma ~ 10^8, not near gamma ~ 7."
+    },
+    {
+      "id": "C7-ism-heating",
+      "section": "§5.1, §10",
+      "claim": "A macroscopic body moving at 0.99c through interstellar hydrogen at 1 atom/cm^3 intercepts each proton at ~5.7 GeV (in its frame) and receives a frontal heating power of ~1.9 MW/m^2, giving a two-face radiative equilibrium temperature of ~2030 K, which exceeds the melting point of silicates and iron.",
+      "question": "For an object moving at 0.99c (Lorentz factor 7.09) through interstellar hydrogen at number density 1 per cubic centimeter: what is the kinetic energy per incident proton in the object's rest frame, and roughly what frontal power per square meter and radiative equilibrium temperature result? Sanity-check ~5.7 GeV per proton and a multi-megawatt-per-square-meter, ~2000 K frontal load."
+    },
+    {
+      "id": "C8-relativistic-dust",
+      "section": "§5.2",
+      "claim": "Hoang, Lazarian & Schlickeiser 2015 (ApJ 806, 255) show sub-micron dust grains cannot be radiation-pressure accelerated beyond Lorentz factor gamma < 2, and relativistic grains are destroyed by Coulomb explosion after sweeping a gas column of only ~10^17 cm^-2.",
+      "question": "In Hoang, Lazarian & Schlickeiser 2015 (ApJ 806, 255, on relativistic dust grains and ultrahigh-energy cosmic rays), what maximum Lorentz factor can radiation pressure give a grain, and after what gas column density are relativistic grains destroyed by Coulomb explosion? Confirm gamma < 2 and ~10^17 cm^-2."
+    }
+  ]
+}
