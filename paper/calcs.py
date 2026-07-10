@@ -283,3 +283,42 @@ for bb in (0.1,0.5,0.9,0.99):
 # asteroid equivalent of 3e11 kg
 r = (3e11/2000/(4/3*math.pi))**(1/3)
 print(f"3e11 kg at rho=2000: diameter = {2*r:.0f} m (Ceres = 9.4e20 kg, ratio {9.4e20/3e11:.1e})")
+
+print()
+print("="*72)
+print("SECTION J: THE ATTAINABLE ENVELOPE (A31-A35)")
+print("="*72)
+# A31 ISM thermal ceiling: solve T_eq(beta;n)=T_lim, 2-face
+def P_ism(b,n_cc): return gamma(b)*n_cc*1e6*b*c*(gamma(b)-1)*mpc2_J
+def beta_for_T(Tlim,n_cc):
+    lo,hi=0.01,0.999999
+    for _ in range(200):
+        mid=(lo+hi)/2
+        if (P_ism(mid,n_cc)/(2*sigma))**0.25>Tlim: hi=mid
+        else: lo=mid
+    return (lo+hi)/2
+print("A31 ISM thermal ceiling beta_max(T_lim, n):")
+for name,T in [("silicate/iron 1500K",1500),("silicate 1800K",1800),
+               ("tungsten 3000K",3000),("graphite 3500K",3500)]:
+    print(f"    {name:20s}: n=1: {beta_for_T(T,1.0):.3f}   n=0.1: {beta_for_T(T,0.1):.3f}")
+# A32 radiator-limited rocket
+print("A32 radiator-limited rocket, century-mission delta-v:")
+for label,R,fw in [("200 W/kg, fw=5%",200,0.05),("1 kW/kg, fw=1%",1000,0.01),
+                   ("10 kW/kg, fw=0.1% (fantasy)",1e4,0.001)]:
+    a_ph=R/(fw*c); a_fus=2*R/(fw*0.1*c)
+    t=100*3.156e7
+    print(f"    {label:28s}: photon a={a_ph:.2e} m/s2 dv={a_ph*t/c:.4f}c | fusion(w=0.1c) a={a_fus:.2e} dv={min(a_fus*t/c,0.99):.3f}c")
+# A33 fusion exhaust-rapidity bound
+print("A33 fusion exhaust bound beta=tanh((w/c)lnR):")
+for w_c in (0.05,0.1):
+    print("    w=%.2fc:"%w_c, ", ".join(f"R={R}: {math.tanh(w_c*math.log(R)):.3f}" for R in (10,100,1000)))
+# A34 mass-driver beta vs track
+a=1e8/3000
+print("A34 mass driver (a=S/rhoL=3.3e4 m/s2, ultimate):")
+for l_AU in (0.1,1,10,100):
+    g_=1+a*l_AU*AU/c**2
+    print(f"    track {l_AU:6.1f} AU: beta = {math.sqrt(1-1/g_**2):.3f}")
+# A35 dust erosion rate scaled from Hoang 2017
+mm_per_pc = 3.086e18/(3e17/0.5)
+print(f"A35 dust erosion (Hoang 0.2c anchor): {mm_per_pc:.1f} mm/pc at n=1;")
+print(f"    1-m body loses 0.5 m in {500/mm_per_pc:.0f} pc")

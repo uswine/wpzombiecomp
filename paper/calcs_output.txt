@@ -142,3 +142,26 @@ chemical w=1.5e-5c, beta=0.5: log10(m0/m1) = 15,904
 chemical w=1.5e-5c, beta=0.9: log10(m0/m1) = 42,625
 chemical w=1.5e-5c, beta=0.99: log10(m0/m1) = 76,628
 3e11 kg at rho=2000: diameter = 659 m (Ceres = 9.4e20 kg, ratio 3.1e+09)
+
+========================================================================
+SECTION J: THE ATTAINABLE ENVELOPE (A31-A35)
+========================================================================
+A31 ISM thermal ceiling beta_max(T_lim, n):
+    silicate/iron 1500K : n=1: 0.971   n=0.1: 0.996
+    silicate 1800K      : n=1: 0.985   n=0.1: 0.998
+    tungsten 3000K      : n=1: 0.998   n=0.1: 1.000
+    graphite 3500K      : n=1: 0.999   n=0.1: 1.000
+A32 radiator-limited rocket, century-mission delta-v:
+    200 W/kg, fw=5%             : photon a=1.33e-05 m/s2 dv=0.0001c | fusion(w=0.1c) a=2.67e-04 dv=0.003c
+    1 kW/kg, fw=1%              : photon a=3.34e-04 m/s2 dv=0.0035c | fusion(w=0.1c) a=6.67e-03 dv=0.070c
+    10 kW/kg, fw=0.1% (fantasy) : photon a=3.34e-02 m/s2 dv=0.3512c | fusion(w=0.1c) a=6.67e-01 dv=0.990c
+A33 fusion exhaust bound beta=tanh((w/c)lnR):
+    w=0.05c: R=10: 0.115, R=100: 0.226, R=1000: 0.332
+    w=0.10c: R=10: 0.226, R=100: 0.431, R=1000: 0.598
+A34 mass driver (a=S/rhoL=3.3e4 m/s2, ultimate):
+    track    0.1 AU: beta = 0.105
+    track    1.0 AU: beta = 0.320
+    track   10.0 AU: beta = 0.766
+    track  100.0 AU: beta = 0.988
+A35 dust erosion (Hoang 0.2c anchor): 5.1 mm/pc at n=1;
+    1-m body loses 0.5 m in 97 pc

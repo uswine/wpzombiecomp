@@ -44,6 +44,13 @@ python3 build_pdf.py      # rebuild the PDF
   waste-heat inequalities; strength-capped acceleration forces 110+ AU track lengths.
 - **Boundary cases** owned explicitly (eon-timescale burns, sub-0.5c gravitational flukes,
   idealized wafers), each tagged inequality [I] / probability [P] / engineering [E].
+- **The attainable envelope (§10)** — the constructive inversion: each mechanism's likely
+  ceiling at its own structural limit. Natural gravitational ejection ≲ 0.03c plausible
+  (0.5c per-exchange scale at vanishing rate); radiator-bound rockets 0.003–0.1c; beamed
+  sails 0.2c (grams) → 0.01c (100 kg); strength-capped mass drivers ~0.1c per 0.1 AU of
+  track; and the transport medium's own material wall at β ≈ 0.97 (silicates/iron, mean
+  density). Known mechanisms plateau one to two orders below the medium's wall; 0.99c
+  sits above both.
 
 Prior-art search (adversarially verified citations): no published no-go theorem exists for
 macroscopic matter at ~0.99c; closest antecedents are Semyonov (2014, 2018), Yurtsever &
