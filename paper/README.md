@@ -7,8 +7,9 @@ Research paper arguing that, under known physics, no demonstrated or physically 
 pathway both accelerates an ordinary macroscopic condensed body (intact solid ≥ 1 cm) to
 β = 0.99 and transports it intact through ordinary interstellar matter — a proof by cases
 over an exhaustive coupling classification, with every closure tagged [I] contradiction /
-[P] rarity / [E] engineering scale. Draft 2, revised after a second adversarial review
-round (corrections logged in the paper's Appendix B).
+[P] rarity / [E] engineering scale. Draft 3: adds the attainable envelope (§10 — likely
+per-mechanism speed limits); draft 2 incorporated a second adversarial review round
+(corrections logged in the paper's Appendix B).
 
 ## Contents
 
