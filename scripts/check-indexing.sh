@@ -58,6 +58,10 @@ if [ "${#urls[@]}" -eq 0 ]; then
   echo "No URLs found. Pass blog-post URLs as arguments instead."
   exit 1
 fi
+if [ -n "${MAX_URLS:-}" ] && [ "${#urls[@]}" -gt "$MAX_URLS" ]; then
+  echo "Capping at first $MAX_URLS of ${#urls[@]} sitemap URLs (set MAX_URLS to change)."
+  urls=("${urls[@]:0:$MAX_URLS}")
+fi
 echo "Checking ${#urls[@]} URL(s)..."
 echo
 

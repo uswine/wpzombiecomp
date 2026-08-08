@@ -1,0 +1,54 @@
+name: Google indexing check
+
+on:
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: "Specific blog-post URLs to check (space-separated). Leave empty to crawl the sitemap."
+        required: false
+        default: ""
+  schedule:
+    - cron: "0 12 * * 1" # every Monday 12:00 UTC
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run indexing check
+        env:
+          MAX_URLS: "50"
+        run: |
+          chmod +x scripts/check-indexing.sh
+          # shellcheck disable=SC2086 — word-splitting of the urls input is intentional
+          ./scripts/check-indexing.sh ${{ github.event.inputs.urls }} 2>&1 | tee report.txt
+
+      - name: Publish report to run summary
+        if: always()
+        run: |
+          {
+            echo "## Google indexing pre-flight report"
+            echo '```'
+            cat report.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Post report as a GitHub issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Google indexing report — $(date -u +%Y-%m-%d)"
+          {
+            echo "Automated report from the [check-indexing workflow run](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})."
+            echo
+            echo '```'
+            head -c 60000 report.txt
+            echo '```'
+          } > issue-body.md
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file issue-body.md
