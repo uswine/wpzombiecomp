@@ -12,6 +12,7 @@ Behavior over the 90° door travel:
 
 | File | Contents |
 |---|---|
+| [`docs/PHONE-SETUP.md`](docs/PHONE-SETUP.md) | How to run Claude Code sessions on this repo from a phone, and how to create new repositories for it |
 | [`docs/DESIGN.md`](docs/DESIGN.md) | Full proposal: concept, torque analysis, component specs, tuning procedure, alternatives comparison |
 | [`drawings/`](drawings/) | Blueprint sheets 1–4: assembly end view, snap cam detail, spring canister section, torque-balance chart |
 | [`calculator.html`](calculator.html) | Interactive sizing calculator — re-solves springs, cam, and stall check for your actual chamber/door dimensions (works offline) |
