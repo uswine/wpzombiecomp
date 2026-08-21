@@ -36,6 +36,29 @@ claude.ai account are what those sessions can see:
 4. Runway's tools now appear in the tools/connectors menu of new chats and
    Code sessions; enable them there if they aren't on by default.
 
+## Pasted the URL into a chat and nothing happened?
+
+That's expected — an MCP URL in a message is just text. Neither claude.ai
+nor a Claude Code session connects to a server because its address appears
+in the conversation; the connection is made in **Settings → Connectors**
+(steps above), and a session only carries the tools of connectors that were
+already connected — and enabled — when the session started.
+
+If the tools aren't showing up, check in this order:
+
+1. **Is it on the account?** Settings → Connectors should list Runway with
+   a **Connected** state. "Added" but never signed in doesn't count — click
+   **Connect** and finish the Runway OAuth sign-in.
+2. **Is it enabled for the chat?** In the chat or Code session's
+   tools/connectors menu, make sure Runway is toggled on.
+3. **Did the session start after the connect?** Sessions pick up their tool
+   list at launch — connect first, then start a fresh session; an
+   already-running session won't gain the tools retroactively.
+4. **Ask from inside the session.** A Claude Code cloud session can
+   enumerate the account's connectors — just ask Claude to list your
+   connectors and it will tell you whether Runway is attached and whether
+   it's enabled for that session.
+
 ## Connect it to Claude Code (CLI on a computer)
 
 ```bash
@@ -83,14 +106,17 @@ cheaper path (no separate API billing).
 
 ## Under the hood (verified against the live endpoint)
 
-Checked 2026-08-20 by probing `https://mcp.runwayml.com/mcp` directly:
+Checked 2026-08-20, re-verified 2026-08-21, by probing
+`https://mcp.runwayml.com/mcp` directly:
 
 - Transport: Streamable HTTP; unauthenticated JSON-RPC POSTs get
   `401 {"error":"missing_bearer"}` with a `WWW-Authenticate` header pointing
-  at the OAuth metadata.
+  at the OAuth metadata. Everything — even `initialize`/`tools/list` — sits
+  behind auth, so the tool list can't be enumerated without signing in.
 - Auth: OAuth 2.1 authorization-code flow with PKCE (S256) and **dynamic
   client registration** (`/register`), so any MCP client can onboard itself
-  without pre-registered credentials. Scopes: `openid`, `api:read_write`.
+  without pre-registered credentials. Public client (no secret), refresh
+  tokens supported. Scopes: `openid`, `api:read_write`.
 - Discovery documents:
   `/.well-known/oauth-protected-resource/mcp` and
   `/.well-known/oauth-authorization-server` on `mcp.runwayml.com`.
