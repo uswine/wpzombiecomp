@@ -23,7 +23,8 @@ Three ways to get there:
    Safari or Chrome. This is the most reliable route: every API works exactly
    as the browser allows.
 2. **Claude artifact link.** The same file is published as a private artifact
-   from the Claude session that built it. If any row shows *No data* or
+   at <https://claude.ai/code/artifact/5c8d570d-8dc7-42c7-85d9-437451e9f3bd>
+   (visible only to the account that owns it). If any row shows *No data* or
    *Blocked* while viewed inside the Claude app, use the page's own
    "open it directly in your browser" link: some sensors are withheld from
    embedded frames.
