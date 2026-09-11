@@ -22,6 +22,7 @@ Behavior over the 90° door travel:
 | [`tools/generate_plate_drawing.py`](tools/generate_plate_drawing.py) | Generates the damper plate print and DXF |
 | [`drawings/pizza-plate-24.*`](drawings/) | 24" pizza cooking plate (vertical smoker): fab print (SVG/PDF), single-contour DXF, STL solid |
 | [`tools/generate_pizza_plate.py`](tools/generate_pizza_plate.py) | Parametric generator for the pizza plate (contour, DXF, STL, print) |
+| [`phone-sensors/`](phone-sensors/) | **Sensor Deck** — single-file web app that lists every sensor a phone browser can reach and streams live readings (motion, orientation, compass, GNSS, light, mic, camera, touch, radios, battery, display). Open `index.html` on the phone; see `phone-sensors/README.md` |
 
 The worked example assumes a 24" OD × ¼"-wall chamber with a 120° × 30" top-hinged
 door; every number is parametric — see `docs/DESIGN.md` §4 or plug real dimensions
